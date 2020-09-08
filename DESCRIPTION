@@ -1,6 +1,6 @@
 Package: deplink
 Type: Package
-Title: Compares the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature).
+Title: Compares the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature)
 Version: 0.99.0
 Authors@R: c(
        person("Xiao", "Chen", email = "seanchen607@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-5059-8846"))

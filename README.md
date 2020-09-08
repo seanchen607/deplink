@@ -17,6 +17,7 @@
 	library(devtools)
 	install_github("seanchen607/deplink")
 	library(deplink)
+	?deplink
 
 <!--
 ## :orange_book: What is Programmed Ribosomal Frameshifting (PRF)?

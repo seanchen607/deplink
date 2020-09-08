@@ -16,6 +16,8 @@
 
 	library(devtools)
 	install_github("seanchen607/deplink")
+	
+## :hourglass_flowing_sand: Load deplink and check help page
 	library(deplink)
 	?deplink
 

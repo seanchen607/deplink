@@ -4,7 +4,7 @@
 ##' @title deplink
 ##' @param signature.name Names of a signature (format: character)
 ##' @param signature Gene names of a signature (format: vector)
-##' @param outputDir Output directory path (format: character)
+##' @param outputDir Output directory, default root directory (format: character)
 ##' @param cutoff.freq Cutoff for frequency of cancer cell lines for each cancer type, default 10
 ##' @param cutoff.percentile Cutoff for percentile of cancer cell lines with highest/lowest dependency, default 0.2
 ##' @param cutoff.pvalue Cutoff for p-value of the T-test results, default 0.05
@@ -27,14 +27,13 @@
 ##' source(system.file("script", "load_libs.R", package = "deplink"))
 ##' signature.name = "PRC2"
 ##' signature = c("EED", "EZH2", "SUZ12")
-##' outputDir = "~/"
 ##' deplink(signature.name, signature, outputDir)
 
 
 ## Main
 deplink <- function(signature.name, 
                     signature, 
-                    outputDir, 
+                    outputDir          = "~", 
                     cutoff.freq        = 10, 
                     cutoff.percentile  = 0.2, 
                     cutoff.pvalue      = 0.05, 

@@ -1,4 +1,7 @@
-# deplink: an R package to compare the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature)
+# deplink
+<!--
+: an R package to compare the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature)
+-->
 
 [![](https://img.shields.io/badge/release%20version-0.99.0-green.svg)](https://github.com/seanchen607/deplink)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)

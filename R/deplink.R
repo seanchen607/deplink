@@ -11,7 +11,7 @@
 ##' @param cutoff.qvalue Cutoff for q-value of the T-test results, default 0.1
 ##' @param cutoff.diff Cutoff for difference of the T-test results, default 0.1
 ##' @param cutoff.fc Cutoff for fold changes of the T-test results, default 2
-##' @return 
+##' @return message
 ##' @importFrom stats complete.cases
 ##' @importFrom wesanderson wes_palette
 ##' @importFrom cowplot plot_grid
@@ -50,12 +50,12 @@ deplink <- function(signature.name,
     # Primary.Disease.freq = table(dep.t.signature.meta.order$disease)
     Primary.Disease.freq = table(dep.t.meta$tcga_code)
     Primary.Disease.freq.cutoff = Primary.Disease.freq[Primary.Disease.freq >= cutoff.freq]
-    TCGA.tumor.target = TCGA.tumor[TCGA.tumor$tcga_code %in% names(Primary.Disease.freq.cutoff),,drop=F]
+    TCGA.tumor.target = TCGA.tumor[TCGA.tumor$tcga_code %in% names(Primary.Disease.freq.cutoff),,drop=FALSE]
     head(TCGA.tumor.target)
     dim(TCGA.tumor.target)
     # 1047    1
 
-    dep.t = dep.t[rownames(dep.t) %in% rownames(TCGA.tumor.target),,drop=F]
+    dep.t = dep.t[rownames(dep.t) %in% rownames(TCGA.tumor.target),,drop=FALSE]
     head(dep.t)
     dim(dep.t)
     # 458 18333
@@ -63,18 +63,18 @@ deplink <- function(signature.name,
     dir.create(file.path(outputDir, signature.name), showWarnings = FALSE)
     setwd(file.path(outputDir, signature.name))
 
-    dep.t.signature = dep.t[,colnames(dep.t) %in% signature, drop=F]
+    dep.t.signature = dep.t[,colnames(dep.t) %in% signature, drop=FALSE]
     dep.t.signature$signature.score = rowMeans(dep.t.signature)*(-1)
-    dep.t.signature = dep.t.signature[order(dep.t.signature$signature.score, decreasing=T),]
+    dep.t.signature = dep.t.signature[order(dep.t.signature$signature.score, decreasing=TRUE),]
     head(dep.t.signature)
     dim(dep.t.signature)
     # 558  5
 
-    dep.t.signature.high = dep.t.signature[1:ceiling(nrow(dep.t.signature)*cutoff.percentile),,drop=F]
+    dep.t.signature.high = dep.t.signature[1:ceiling(nrow(dep.t.signature)*cutoff.percentile),,drop=FALSE]
     head(dep.t.signature.high)
     dim(dep.t.signature.high)
     # 56 12
-    dep.t.signature.low = dep.t.signature[(nrow(dep.t.signature)-ceiling(nrow(dep.t.signature)*cutoff.percentile) + 1):nrow(dep.t.signature),,drop=F]
+    dep.t.signature.low = dep.t.signature[(nrow(dep.t.signature)-ceiling(nrow(dep.t.signature)*cutoff.percentile) + 1):nrow(dep.t.signature),,drop=FALSE]
     head(dep.t.signature.low)
     dim(dep.t.signature.low)
     # 56 12
@@ -85,11 +85,11 @@ deplink <- function(signature.name,
     # Cancer type information
     dir.create(file.path(outputDir, signature.name, "meta"), showWarnings = FALSE)
 
-    meta.signature.high = meta[rownames(meta) %in% rownames(dep.t.signature.high),,drop=F]
+    meta.signature.high = meta[rownames(meta) %in% rownames(dep.t.signature.high),,drop=FALSE]
     head(meta.signature.high)
     dim(meta.signature.high)
     # 56  8
-    meta.signature.low = meta[rownames(meta) %in% rownames(dep.t.signature.low),,drop=F]
+    meta.signature.low = meta[rownames(meta) %in% rownames(dep.t.signature.low),,drop=FALSE]
     head(meta.signature.low)
     dim(meta.signature.low)
     # 56  8
@@ -119,13 +119,13 @@ deplink <- function(signature.name,
     head(primary.pair)
     length(primary.pair)
     # 14
-    meta.signature.high.pair = meta.signature.high[meta.signature.high$disease %in% primary.pair & !meta.signature.high$disease %in% c("Leukemia", "Lymphoma", "Myeloma"),,drop=F]
-    meta.signature.high.pair = meta.signature.high.pair[order(meta.signature.high.pair$disease),,drop=F]
+    meta.signature.high.pair = meta.signature.high[meta.signature.high$disease %in% primary.pair & !meta.signature.high$disease %in% c("Leukemia", "Lymphoma", "Myeloma"),,drop=FALSE]
+    meta.signature.high.pair = meta.signature.high.pair[order(meta.signature.high.pair$disease),,drop=FALSE]
     head(meta.signature.high.pair)
     dim(meta.signature.high.pair)
     # 32  8
-    meta.signature.low.pair = meta.signature.low[meta.signature.low$disease %in% primary.pair & !meta.signature.low$disease %in% c("Leukemia", "Lymphoma", "Myeloma"),,drop=F]
-    meta.signature.low.pair = meta.signature.low.pair[order(meta.signature.low.pair$disease),,drop=F]
+    meta.signature.low.pair = meta.signature.low[meta.signature.low$disease %in% primary.pair & !meta.signature.low$disease %in% c("Leukemia", "Lymphoma", "Myeloma"),,drop=FALSE]
+    meta.signature.low.pair = meta.signature.low.pair[order(meta.signature.low.pair$disease),,drop=FALSE]
     head(meta.signature.low.pair)
     dim(meta.signature.low.pair)
     # 33  8
@@ -133,7 +133,7 @@ deplink <- function(signature.name,
     write.csv(meta.signature.low.pair, paste0("meta/dep_", signature.name, "_score.low_meta.pair.csv"))
 
     # dot plot
-    dep.t.signature.meta = merge(dep.t.signature, meta, by="row.names", all=F)
+    dep.t.signature.meta = merge(dep.t.signature, meta, by="row.names", all=FALSE)
     rownames(dep.t.signature.meta) = dep.t.signature.meta[,1]
     dep.t.signature.meta = dep.t.signature.meta[,-1]
     head(dep.t.signature.meta)
@@ -141,7 +141,7 @@ deplink <- function(signature.name,
     # 558  20
     write.csv(dep.t.signature.meta, paste0("meta/dep_", signature.name, "_score.meta.csv"))
 
-    dep.t.signature.meta = merge(dep.t.signature.meta, TCGA.tumor, by="row.names", all=F)
+    dep.t.signature.meta = merge(dep.t.signature.meta, TCGA.tumor, by="row.names", all=FALSE)
     rownames(dep.t.signature.meta) = dep.t.signature.meta[,1]
     dep.t.signature.meta = dep.t.signature.meta[,-1]
     head(dep.t.signature.meta)
@@ -161,8 +161,8 @@ deplink <- function(signature.name,
     plotlist = list()
     for (i in 1:length(Primary.Disease.freq.cutoff)) {
         cancer.type = names(Primary.Disease.freq.cutoff)[i]
-        # dep.t.signature.meta.order.subset = dep.t.signature.meta.order[dep.t.signature.meta.order$disease == cancer.type,,drop=F]
-        dep.t.signature.meta.order.subset = dep.t.signature.meta.order[dep.t.signature.meta.order$tcga_code == cancer.type,,drop=F]
+        # dep.t.signature.meta.order.subset = dep.t.signature.meta.order[dep.t.signature.meta.order$disease == cancer.type,,drop=FALSE]
+        dep.t.signature.meta.order.subset = dep.t.signature.meta.order[dep.t.signature.meta.order$tcga_code == cancer.type,,drop=FALSE]
         dep.t.signature.meta.order.subset$order = seq(1:nrow(dep.t.signature.meta.order.subset))
         head(dep.t.signature.meta.order.subset)
         dim(dep.t.signature.meta.order.subset)
@@ -217,22 +217,22 @@ deplink <- function(signature.name,
     # Chromatin modification
     dir.create(file.path(outputDir, signature.name, "chromatin"), showWarnings = FALSE)
 
-    chromatin.share = chromatin[rownames(chromatin) %in% rownames(dep.t),,drop=F]
+    chromatin.share = chromatin[rownames(chromatin) %in% rownames(dep.t),,drop=FALSE]
     head(chromatin.share)
     dim(chromatin.share)
     # 446  31
 
-    chromatin.share.signature.high = chromatin.share[rownames(chromatin.share) %in% rownames(dep.t.signature.high),,drop=F]
+    chromatin.share.signature.high = chromatin.share[rownames(chromatin.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     chromatin.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(chromatin.share.signature.high)
     dim(chromatin.share.signature.high)
     # 40 44
-    chromatin.share.signature.low = chromatin.share[rownames(chromatin.share) %in% rownames(dep.t.signature.low),,drop=F]
+    chromatin.share.signature.low = chromatin.share[rownames(chromatin.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     chromatin.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(chromatin.share.signature.low)
     dim(chromatin.share.signature.low)
     # 46 44
-    chromatin.share.signature.mid = chromatin.share[!rownames(chromatin.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    chromatin.share.signature.mid = chromatin.share[!rownames(chromatin.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     chromatin.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(chromatin.share.signature.mid)
     dim(chromatin.share.signature.mid)
@@ -242,14 +242,14 @@ deplink <- function(signature.name,
     head(chromatin.share.signature)
     dim(chromatin.share.signature)
     # 446  44
-    write.csv(chromatin.share.signature, paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.csv"), quote=F)
+    write.csv(chromatin.share.signature, paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.csv"), quote=FALSE)
 
-    chromatin.high = chromatin.share.signature[chromatin.share.signature$signature %like% "high",,drop=F]
+    chromatin.high = chromatin.share.signature[chromatin.share.signature$signature %like% "high",,drop=FALSE]
     head(chromatin.high)
     dim(chromatin.high)
     # 40 44
-    chromatin.mid = chromatin.share.signature[chromatin.share.signature$signature %like% "mid",,drop=F]
-    chromatin.low = chromatin.share.signature[chromatin.share.signature$signature %like% "low",,drop=F]
+    chromatin.mid = chromatin.share.signature[chromatin.share.signature$signature %like% "mid",,drop=FALSE]
+    chromatin.low = chromatin.share.signature[chromatin.share.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     chromatin.high.p = apply(chromatin.share.signature[2:(ncol(chromatin.share.signature)-1)], 2, function(x) signif(t.test(x[1:nrow(chromatin.high)], x[(nrow(chromatin.high)+1):nrow(chromatin.share.signature)])$p.value,5))
@@ -272,7 +272,7 @@ deplink <- function(signature.name,
     head(chromatin.high.deg)
     dim(chromatin.high.deg)
     # 42  5
-    write.csv(chromatin.high.deg, paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.high.deg.csv"), quote=F)
+    write.csv(chromatin.high.deg, paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.high.deg.csv"), quote=FALSE)
 
     # signature.low
     chromatin.low.p = apply(chromatin.share.signature[2:(ncol(chromatin.share.signature)-1)], 2, function(x) signif(t.test(x[1:(nrow(chromatin.share.signature)-nrow(chromatin.low))], x[(nrow(chromatin.share.signature)-nrow(chromatin.low)+1):nrow(chromatin.share.signature)])$p.value,5))
@@ -295,7 +295,7 @@ deplink <- function(signature.name,
     head(chromatin.low.deg)
     dim(chromatin.low.deg)
     # 42  5
-    write.csv(chromatin.low.deg, paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.low.deg.csv"), quote=F)
+    write.csv(chromatin.low.deg, paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.low.deg.csv"), quote=FALSE)
 
     # cutoff.pvalue = 1
     # cutoff.diff = 0.1
@@ -307,7 +307,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) +
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(chromatin.high.deg$diff.high2other)), y=max((-1)*log(chromatin.high.deg$pvalue, 10), (-1)*log(chromatin.low.deg$pvalue, 10))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(chromatin.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(chromatin.high.deg$diff.high2other)), y=max((-1)*log(chromatin.high.deg$pvalue, 10), (-1)*log(chromatin.low.deg$pvalue, 10))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(chromatin.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(chromatin.high.deg$pvalue < cutoff.pvalue & abs(chromatin.high.deg$diff.high2other) > cutoff.diff, as.character(rownames(chromatin.high.deg)), "")), size = 2, color = ifelse(chromatin.high.deg$diff.high2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="Modification difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
@@ -320,7 +320,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) +
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(chromatin.low.deg$diff.low2other)), y=max((-1)*log(chromatin.high.deg$pvalue, 10), (-1)*log(chromatin.low.deg$pvalue, 10))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(chromatin.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(chromatin.low.deg$diff.low2other)), y=max((-1)*log(chromatin.high.deg$pvalue, 10), (-1)*log(chromatin.low.deg$pvalue, 10))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(chromatin.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(chromatin.low.deg$pvalue < cutoff.pvalue & abs(chromatin.low.deg$diff.low2other) > cutoff.diff, as.character(rownames(chromatin.low.deg)), "")), size = 2, color = ifelse(chromatin.low.deg$diff.low2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="Modification difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
@@ -337,17 +337,17 @@ deplink <- function(signature.name,
     # Mutation - COSMIC
     dir.create(file.path(outputDir, signature.name, "COSMIC"), showWarnings = FALSE)
 
-    cosmic.share.signature.high = cosmic.share[rownames(cosmic.share) %in% rownames(dep.t.signature.high),,drop=F]
+    cosmic.share.signature.high = cosmic.share[rownames(cosmic.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     cosmic.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(cosmic.share.signature.high)
     dim(cosmic.share.signature.high)
     # 40 44
-    cosmic.share.signature.low = cosmic.share[rownames(cosmic.share) %in% rownames(dep.t.signature.low),,drop=F]
+    cosmic.share.signature.low = cosmic.share[rownames(cosmic.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     cosmic.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(cosmic.share.signature.low)
     dim(cosmic.share.signature.low)
     # 46 44
-    cosmic.share.signature.mid = cosmic.share[!rownames(cosmic.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    cosmic.share.signature.mid = cosmic.share[!rownames(cosmic.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     cosmic.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(cosmic.share.signature.mid)
     dim(cosmic.share.signature.mid)
@@ -357,14 +357,14 @@ deplink <- function(signature.name,
     head(cosmic.share.signature)
     dim(cosmic.share.signature)
     # 446  44
-    write.csv(cosmic.share.signature, paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.csv"), quote=F)
+    write.csv(cosmic.share.signature, paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.csv"), quote=FALSE)
 
-    cosmic.high = cosmic.share.signature[cosmic.share.signature$signature %like% "high",,drop=F]
+    cosmic.high = cosmic.share.signature[cosmic.share.signature$signature %like% "high",,drop=FALSE]
     head(cosmic.high)
     dim(cosmic.high)
     # 40 44
-    cosmic.mid = cosmic.share.signature[cosmic.share.signature$signature %like% "mid",,drop=F]
-    cosmic.low = cosmic.share.signature[cosmic.share.signature$signature %like% "low",,drop=F]
+    cosmic.mid = cosmic.share.signature[cosmic.share.signature$signature %like% "mid",,drop=FALSE]
+    cosmic.low = cosmic.share.signature[cosmic.share.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     cosmic.high.p = apply(cosmic.share.signature[1:(ncol(cosmic.share.signature)-1)], 2, function(x) signif(t.test(x[1:nrow(cosmic.high)], x[(nrow(cosmic.high)+1):nrow(cosmic.share.signature)])$p.value,5))
@@ -387,7 +387,7 @@ deplink <- function(signature.name,
     head(cosmic.high.deg)
     dim(cosmic.high.deg)
     # 42  5
-    write.csv(cosmic.high.deg, paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.high.deg.csv"), quote=F)
+    write.csv(cosmic.high.deg, paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.high.deg.csv"), quote=FALSE)
 
     # signature.low
     cosmic.low.p = apply(cosmic.share.signature[1:(ncol(cosmic.share.signature)-1)], 2, function(x) signif(t.test(x[1:(nrow(cosmic.share.signature)-nrow(cosmic.low))], x[(nrow(cosmic.share.signature)-nrow(cosmic.low)+1):nrow(cosmic.share.signature)])$p.value,5))
@@ -410,7 +410,7 @@ deplink <- function(signature.name,
     head(cosmic.low.deg)
     dim(cosmic.low.deg)
     # 42  5
-    write.csv(cosmic.low.deg, paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.low.deg.csv"), quote=F)
+    write.csv(cosmic.low.deg, paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.low.deg.csv"), quote=FALSE)
 
     # cutoff.pvalue = 0.05
     # cutoff.diff = 0
@@ -422,7 +422,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(cosmic.high.deg$diff.high2other), y=max(na.omit((-1)*log(cosmic.high.deg$pvalue, 10)), na.omit((-1)*log(cosmic.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(cosmic.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(cosmic.high.deg$diff.high2other), y=max(na.omit((-1)*log(cosmic.high.deg$pvalue, 10)), na.omit((-1)*log(cosmic.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(cosmic.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & abs(cosmic.high.deg$diff.high2other) > cutoff.diff, as.character(rownames(cosmic.high.deg)), "")), size = 2, color = ifelse(cosmic.high.deg$diff.high2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="COSMIC difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
@@ -435,7 +435,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(cosmic.low.deg$diff.low2other), y=max(na.omit( (-1)*log(cosmic.high.deg$pvalue, 10)), na.omit((-1)*log(cosmic.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(cosmic.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(cosmic.low.deg$diff.low2other), y=max(na.omit( (-1)*log(cosmic.high.deg$pvalue, 10)), na.omit((-1)*log(cosmic.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(cosmic.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & abs(cosmic.low.deg$diff.low2other) > cutoff.diff, as.character(rownames(cosmic.low.deg)), "")), size = 2, color = ifelse(cosmic.low.deg$diff.low2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="COSMIC difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
@@ -452,19 +452,19 @@ deplink <- function(signature.name,
     # Mutation
     dir.create(file.path(outputDir, signature.name, "mutation"), showWarnings = FALSE)
 
-    mutation.signature.high = mutation[rownames(mutation) %in% rownames(dep.t.signature.high),,drop=F]
+    mutation.signature.high = mutation[rownames(mutation) %in% rownames(dep.t.signature.high),,drop=FALSE]
     mutation.signature.high.gene = mutation.signature.high[,colSums(mutation.signature.high)>1]
     mutation.signature.high$signature = paste0(signature.name, ".dep.high")
     head(mutation.signature.high)
     dim(mutation.signature.high)
     # 40 44
-    mutation.signature.low = mutation[rownames(mutation) %in% rownames(dep.t.signature.low),,drop=F]
+    mutation.signature.low = mutation[rownames(mutation) %in% rownames(dep.t.signature.low),,drop=FALSE]
     mutation.signature.low.gene = mutation.signature.low[,colSums(mutation.signature.low)>1]
     mutation.signature.low$signature = paste0(signature.name, ".dep.low")
     head(mutation.signature.low)
     dim(mutation.signature.low)
     # 46 44
-    mutation.signature.mid = mutation[!rownames(mutation) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    mutation.signature.mid = mutation[!rownames(mutation) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     mutation.signature.mid.gene = mutation.signature.mid[,colSums(mutation.signature.mid)>1]
     mutation.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(mutation.signature.mid)
@@ -476,18 +476,18 @@ deplink <- function(signature.name,
     # 9422
 
     mutation.signature = rbind(mutation.signature.high, mutation.signature.mid, mutation.signature.low)
-    mutation.signature = mutation.signature[,colnames(mutation.signature) %in% c(gene.union, "signature"),drop=F]
+    mutation.signature = mutation.signature[,colnames(mutation.signature) %in% c(gene.union, "signature"),drop=FALSE]
     head(mutation.signature)
     dim(mutation.signature)
     # 554 9423
-    # write.csv(mutation.signature, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.csv"), quote=F)
+    # write.csv(mutation.signature, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.csv"), quote=FALSE)
 
-    mutation.high = mutation.signature[mutation.signature$signature %like% "high",,drop=F]
+    mutation.high = mutation.signature[mutation.signature$signature %like% "high",,drop=FALSE]
     head(mutation.high)
     dim(mutation.high)
     # 40 44
-    mutation.mid = mutation.signature[mutation.signature$signature %like% "mid",,drop=F]
-    mutation.low = mutation.signature[mutation.signature$signature %like% "low",,drop=F]
+    mutation.mid = mutation.signature[mutation.signature$signature %like% "mid",,drop=FALSE]
+    mutation.low = mutation.signature[mutation.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     mutation.high.p = apply(mutation.signature[1:(ncol(mutation.signature)-1)], 2, function(x) signif(t.test(na.omit(x[1:nrow(mutation.high)]), na.omit(x[(nrow(mutation.high)+1):nrow(mutation.signature)]))$p.value,5))
@@ -510,7 +510,7 @@ deplink <- function(signature.name,
     head(mutation.high.deg)
     dim(mutation.high.deg)
     # 42  5
-    write.csv(mutation.high.deg, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.high.deg.csv"), quote=F)
+    write.csv(mutation.high.deg, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.high.deg.csv"), quote=FALSE)
 
     # signature.low
     mutation.low.p = apply(mutation.signature[1:(ncol(mutation.signature)-1)], 2, function(x) signif(t.test(x[1:(nrow(mutation.signature)-nrow(mutation.low))], x[(nrow(mutation.signature)-nrow(mutation.low)+1):nrow(mutation.signature)])$p.value,5))
@@ -533,7 +533,7 @@ deplink <- function(signature.name,
     head(mutation.low.deg)
     dim(mutation.low.deg)
     # 42  5
-    write.csv(mutation.low.deg, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.low.deg.csv"), quote=F)
+    write.csv(mutation.low.deg, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.low.deg.csv"), quote=FALSE)
 
     # signature.high2low
     mutation.high2low.p = apply(mutation.signature[1:(ncol(mutation.signature)-1)], 2, function(x) signif(t.test(na.omit(x[1:nrow(mutation.high)]), na.omit(x[(nrow(mutation.signature)-nrow(mutation.low)+1):nrow(mutation.signature)]))$p.value,5))
@@ -556,10 +556,10 @@ deplink <- function(signature.name,
     head(mutation.high2low.deg)
     dim(mutation.high2low.deg)
     # 42  5
-    write.csv(mutation.high2low.deg, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.high2low.deg.csv"), quote=F)
+    write.csv(mutation.high2low.deg, paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.high2low.deg.csv"), quote=FALSE)
 
-    # mutation.high.deg = mutation.high.deg[mutation.high.deg$mutation.high > 0 & mutation.high.deg$mutation.other > 0,,drop=F]
-    # mutation.low.deg = mutation.low.deg[mutation.low.deg$mutation.low > 0 & mutation.low.deg$mutation.other > 0,,drop=F]
+    # mutation.high.deg = mutation.high.deg[mutation.high.deg$mutation.high > 0 & mutation.high.deg$mutation.other > 0,,drop=FALSE]
+    # mutation.low.deg = mutation.low.deg[mutation.low.deg$mutation.low > 0 & mutation.low.deg$mutation.other > 0,,drop=FALSE]
 
     # cutoff.pvalue = 0.05
     # cutoff.diff = 0.1
@@ -571,7 +571,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=-0.2, y=max((-1)*log(mutation.high.deg$pvalue, 10))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(mutation.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=-0.2, y=max((-1)*log(mutation.high.deg$pvalue, 10))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(mutation.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(mutation.high.deg$pvalue < cutoff.pvalue & abs(mutation.high.deg$diff.high2other) > cutoff.diff, as.character(rownames(mutation.high.deg)), "")), size = 2, color = ifelse(mutation.high.deg$diff.high2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="Mutation difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
@@ -584,7 +584,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=-0.2, y=max((-1)*log(mutation.low.deg$pvalue, 10))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(mutation.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=-0.2, y=max((-1)*log(mutation.low.deg$pvalue, 10))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(mutation.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(mutation.low.deg$pvalue < cutoff.pvalue & abs(mutation.low.deg$diff.low2other) > cutoff.diff, as.character(rownames(mutation.low.deg)), "")), size = 2, color = ifelse(mutation.low.deg$diff.low2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="Mutation difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
@@ -597,7 +597,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=-0.2, y=max((-1)*log(mutation.high2low.deg$pvalue, 10))*1.1, parse=F, label = paste0("Signature.high/low cell lines: ", nrow(mutation.signature.high), "/", nrow(mutation.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=-0.2, y=max((-1)*log(mutation.high2low.deg$pvalue, 10))*1.1, parse=FALSE, label = paste0("Signature.high/low cell lines: ", nrow(mutation.signature.high), "/", nrow(mutation.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(mutation.high2low.deg$pvalue < cutoff.pvalue & abs(mutation.high2low.deg$diff.high2low) > cutoff.diff, as.character(rownames(mutation.high2low.deg)), "")), size = 2, color = ifelse(mutation.high2low.deg$diff.high2low > 0, "red", "blue"), segment.size=0.2) +
     labs(x="Mutation difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. Low"))
     p3 <- p3 + theme_classic() + rremove("legend")
@@ -614,22 +614,22 @@ deplink <- function(signature.name,
     # Drug sensitivity
     dir.create(file.path(outputDir, signature.name, "drug"), showWarnings = FALSE)
 
-    drug.share = drug[rownames(drug) %in% rownames(dep.t),,drop=F]
+    drug.share = drug[rownames(drug) %in% rownames(dep.t),,drop=FALSE]
     head(drug.share)
     dim(drug.share)
     # 327 266
 
-    drug.share.signature.high = drug.share[rownames(drug.share) %in% rownames(dep.t.signature.high),,drop=F]
+    drug.share.signature.high = drug.share[rownames(drug.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     drug.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(drug.share.signature.high)
     dim(drug.share.signature.high)
     # 27 267
-    drug.share.signature.low = drug.share[rownames(drug.share) %in% rownames(dep.t.signature.low),,drop=F]
+    drug.share.signature.low = drug.share[rownames(drug.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     drug.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(drug.share.signature.low)
     dim(drug.share.signature.low)
     # 33 267
-    drug.share.signature.mid = drug.share[!rownames(drug.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    drug.share.signature.mid = drug.share[!rownames(drug.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     drug.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(drug.share.signature.mid)
     dim(drug.share.signature.mid)
@@ -639,14 +639,14 @@ deplink <- function(signature.name,
     head(drug.share.signature)
     dim(drug.share.signature)
     # 327 267
-    # write.csv(drug.share.signature, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.csv"), quote=F)
+    # write.csv(drug.share.signature, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.csv"), quote=FALSE)
 
-    drug.high = drug.share.signature[drug.share.signature$signature %like% "high",,drop=F]
+    drug.high = drug.share.signature[drug.share.signature$signature %like% "high",,drop=FALSE]
     head(drug.high)
     dim(drug.high)
     # 27 267
-    drug.mid = drug.share.signature[drug.share.signature$signature %like% "mid",,drop=F]
-    drug.low = drug.share.signature[drug.share.signature$signature %like% "low",,drop=F]
+    drug.mid = drug.share.signature[drug.share.signature$signature %like% "mid",,drop=FALSE]
+    drug.low = drug.share.signature[drug.share.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     drug.high.p = apply(drug.share.signature[1:(ncol(drug.share.signature)-1)], 2, function(x) ifelse(length(x[1:nrow(drug.high)][!is.na(x[1:nrow(drug.high)])])>1, signif(t.test(x[1:nrow(drug.high)], x[(nrow(drug.high)+1):nrow(drug.share.signature)])$p.value,5), NA))
@@ -670,13 +670,13 @@ deplink <- function(signature.name,
     dim(drug.high.deg)
     # 266   5
 
-    drug.high.deg = merge(drug.high.deg, drug.meta, by="row.names", all.x=T)
+    drug.high.deg = merge(drug.high.deg, drug.meta, by="row.names", all.x=TRUE)
     rownames(drug.high.deg) = drug.high.deg[,1]
     drug.high.deg = drug.high.deg[,-1]
     head(drug.high.deg)
     dim(drug.high.deg)
     # 266   9
-    write.csv(drug.high.deg, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.deg.csv"), quote=T)
+    write.csv(drug.high.deg, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.deg.csv"), quote=TRUE)
 
     # signature.low
     drug.low.p = apply(drug.share.signature[1:(ncol(drug.share.signature)-1)], 2, function(x) ifelse(length(x[1:(nrow(drug.share.signature)-nrow(drug.low))][!is.na(x[1:(nrow(drug.share.signature)-nrow(drug.low))])])>1, signif(t.test(x[1:(nrow(drug.share.signature)-nrow(drug.low))], x[(nrow(drug.share.signature)-nrow(drug.low)+1):nrow(drug.share.signature)])$p.value,5), NA))
@@ -700,13 +700,13 @@ deplink <- function(signature.name,
     dim(drug.low.deg)
     # 266   5
 
-    drug.low.deg = merge(drug.low.deg, drug.meta, by="row.names", all.x=T)
+    drug.low.deg = merge(drug.low.deg, drug.meta, by="row.names", all.x=TRUE)
     rownames(drug.low.deg) = drug.low.deg[,1]
     drug.low.deg = drug.low.deg[,-1]
     head(drug.low.deg)
     dim(drug.low.deg)
     # 266   9
-    write.csv(drug.low.deg, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.low.deg.csv"), quote=T)
+    write.csv(drug.low.deg, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.low.deg.csv"), quote=TRUE)
 
     drug.high.deg$DRUG_NAME = gsub(" \\(.+\\)", "", drug.high.deg$DRUG_NAME)
     drug.low.deg$DRUG_NAME = gsub(" \\(.+\\)", "", drug.low.deg$DRUG_NAME)
@@ -721,7 +721,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(drug.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(drug.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug.high.deg$pvalue < cutoff.pvalue & abs(drug.high.deg$diff.high2other) > cutoff.diff, as.character(drug.high.deg$DRUG_NAME), "")), size = 2, color = ifelse(drug.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
@@ -734,7 +734,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(drug.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(drug.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug.low.deg$pvalue < cutoff.pvalue & abs(drug.low.deg$diff.low2other) > cutoff.diff, as.character(drug.low.deg$DRUG_NAME), "")), size = 2, color = ifelse(drug.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
@@ -747,7 +747,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(drug.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(drug.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug.high.deg$pvalue < cutoff.pvalue & abs(drug.high.deg$diff.high2other) > cutoff.diff, as.character(drug.high.deg$TARGET_PATHWAY), "")), size = 2, color = ifelse(drug.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p3 <- p3 + theme_classic() + rremove("legend")
@@ -760,7 +760,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(drug.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug.high.deg$diff.high2other), na.omit(drug.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug.high.deg$pvalue, 10)), na.omit((-1)*log(drug.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(drug.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug.low.deg$pvalue < cutoff.pvalue & abs(drug.low.deg$diff.low2other) > cutoff.diff, as.character(drug.low.deg$TARGET_PATHWAY), "")), size = 2, color = ifelse(drug.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p4 <- p4 + theme_classic() + rremove("legend")
@@ -769,29 +769,29 @@ deplink <- function(signature.name,
     # Arranging the plot using cowplot
     p = suppressWarnings(plot_grid(p1, p2, p3, p4, ncol = 2, align = "hv", rel_widths = c(1,1), rel_heights = c(1,1)))
     p <- ggplotGrob(p)
-    ggsave(paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=F, device="pdf")
+    ggsave(paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=FALSE, device="pdf")
 
     message("[05/14] Analysis-drug.GDSC: done!")
     #############################################
 
     # Drug sensitivity2
     dir.create(file.path(outputDir, signature.name, "drug.PRISM"), showWarnings = FALSE)
-    drug2.share = drug2[rownames(drug2) %in% rownames(dep.t),,drop=F]
+    drug2.share = drug2[rownames(drug2) %in% rownames(dep.t),,drop=FALSE]
     head(drug2.share)
     dim(drug2.share)
     # 359 4686
 
-    drug2.share.signature.high = drug2.share[rownames(drug2.share) %in% rownames(dep.t.signature.high),,drop=F]
+    drug2.share.signature.high = drug2.share[rownames(drug2.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     drug2.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(drug2.share.signature.high)
     dim(drug2.share.signature.high)
     # 23 4687
-    drug2.share.signature.low = drug2.share[rownames(drug2.share) %in% rownames(dep.t.signature.low),,drop=F]
+    drug2.share.signature.low = drug2.share[rownames(drug2.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     drug2.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(drug2.share.signature.low)
     dim(drug2.share.signature.low)
     # 39 4687
-    drug2.share.signature.mid = drug2.share[!rownames(drug2.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    drug2.share.signature.mid = drug2.share[!rownames(drug2.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     drug2.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(drug2.share.signature.mid)
     dim(drug2.share.signature.mid)
@@ -801,14 +801,14 @@ deplink <- function(signature.name,
     head(drug2.share.signature)
     dim(drug2.share.signature)
     # 359 4687
-    # write.csv(drug2.share.signature, paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.csv"), quote=F)
+    # write.csv(drug2.share.signature, paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.csv"), quote=FALSE)
 
-    drug2.high = drug2.share.signature[drug2.share.signature$signature %like% "high",,drop=F]
+    drug2.high = drug2.share.signature[drug2.share.signature$signature %like% "high",,drop=FALSE]
     head(drug2.high)
     dim(drug2.high)
     # 27 267
-    drug2.mid = drug2.share.signature[drug2.share.signature$signature %like% "mid",,drop=F]
-    drug2.low = drug2.share.signature[drug2.share.signature$signature %like% "low",,drop=F]
+    drug2.mid = drug2.share.signature[drug2.share.signature$signature %like% "mid",,drop=FALSE]
+    drug2.low = drug2.share.signature[drug2.share.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     drug2.high.p = apply(drug2.share.signature[1:(ncol(drug2.share.signature)-1)], 2, function(x) ifelse(length(x[1:nrow(drug2.high)][!is.na(x[1:nrow(drug2.high)])])>1, signif(t.test(x[1:nrow(drug2.high)], x[(nrow(drug2.high)+1):nrow(drug2.share.signature)])$p.value,5), NA))
@@ -832,13 +832,13 @@ deplink <- function(signature.name,
     dim(drug2.high.deg)
     # 266   5
 
-    drug2.high.deg = merge(drug2.high.deg, drug2.meta, by="row.names", all.x=T)
+    drug2.high.deg = merge(drug2.high.deg, drug2.meta, by="row.names", all.x=TRUE)
     rownames(drug2.high.deg) = drug2.high.deg[,1]
     drug2.high.deg = drug2.high.deg[,-1]
     head(drug2.high.deg)
     dim(drug2.high.deg)
     # 266   9
-    write.csv(drug2.high.deg, paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.deg.csv"), quote=T)
+    write.csv(drug2.high.deg, paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.deg.csv"), quote=TRUE)
 
     # signature.low
     drug2.low.p = apply(drug2.share.signature[1:(ncol(drug2.share.signature)-1)], 2, function(x) ifelse(length(x[(nrow(drug2.share.signature)-nrow(drug2.low)+1):nrow(drug2.share.signature)][!is.na(x[(nrow(drug2.share.signature)-nrow(drug2.low)+1):nrow(drug2.share.signature)])])>1, signif(t.test(x[1:(nrow(drug2.share.signature)-nrow(drug2.low))], x[(nrow(drug2.share.signature)-nrow(drug2.low)+1):nrow(drug2.share.signature)])$p.value,5), NA))
@@ -862,13 +862,13 @@ deplink <- function(signature.name,
     dim(drug2.low.deg)
     # 266   5
 
-    drug2.low.deg = merge(drug2.low.deg, drug2.meta, by="row.names", all.x=T)
+    drug2.low.deg = merge(drug2.low.deg, drug2.meta, by="row.names", all.x=TRUE)
     rownames(drug2.low.deg) = drug2.low.deg[,1]
     drug2.low.deg = drug2.low.deg[,-1]
     head(drug2.low.deg)
     dim(drug2.low.deg)
     # 266   9
-    write.csv(drug2.low.deg, paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.low.deg.csv"), quote=T)
+    write.csv(drug2.low.deg, paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.low.deg.csv"), quote=TRUE)
 
     drug2.high.deg$moa = gsub(",\\(.+\\)", "", drug2.high.deg$moa)
     drug2.low.deg$moa = gsub(",\\(.+\\)", "", drug2.low.deg$moa)
@@ -883,7 +883,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(drug2.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(drug2.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug2.high.deg$pvalue < cutoff.pvalue & abs(drug2.high.deg$diff.high2other) > cutoff.diff, as.character(drug2.high.deg$name), "")), size = 2, color = ifelse(drug2.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
@@ -896,7 +896,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(drug2.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(drug2.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug2.low.deg$pvalue < cutoff.pvalue & abs(drug2.low.deg$diff.low2other) > cutoff.diff, as.character(drug2.low.deg$name), "")), size = 2, color = ifelse(drug2.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
@@ -909,7 +909,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(drug2.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(drug2.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug2.high.deg$pvalue < cutoff.pvalue & abs(drug2.high.deg$diff.high2other) > cutoff.diff, as.character(drug2.high.deg$moa), "")), size = 2, color = ifelse(drug2.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p3 <- p3 + theme_classic() + rremove("legend")
@@ -922,7 +922,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(drug2.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(drug2.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(drug2.low.deg$pvalue < cutoff.pvalue & abs(drug2.low.deg$diff.low2other) > cutoff.diff, as.character(drug2.low.deg$moa), "")), size = 2, color = ifelse(drug2.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p4 <- p4 + theme_classic() + rremove("legend")
@@ -931,30 +931,30 @@ deplink <- function(signature.name,
     # Arranging the plot using cowplot
     p = suppressWarnings(plot_grid(p1, p2, p3, p4, ncol = 2, align = "hv", rel_widths = c(1,1), rel_heights = c(1,1)))
     p <- ggplotGrob(p)
-    ggsave(paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=F, device="pdf")
+    ggsave(paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=FALSE, device="pdf")
 
     message("[06/14] Analysis-drug.PRISM: done!")
     #############################################
 
     # Dependency
     dir.create(file.path(outputDir, signature.name, "dependency"), showWarnings = FALSE)
-    # dependency.share = dep.t[,!colnames(dep.t) %in% signature,drop=F]
+    # dependency.share = dep.t[,!colnames(dep.t) %in% signature,drop=FALSE]
     dependency.share = dep.t
     head(dependency.share)
     dim(dependency.share)
     # 558 17536
 
-    dependency.share.signature.high = dependency.share[rownames(dependency.share) %in% rownames(dep.t.signature.high),,drop=F]
+    dependency.share.signature.high = dependency.share[rownames(dependency.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     dependency.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(dependency.share.signature.high)
     dim(dependency.share.signature.high)
     # 27 267
-    dependency.share.signature.low = dependency.share[rownames(dependency.share) %in% rownames(dep.t.signature.low),,drop=F]
+    dependency.share.signature.low = dependency.share[rownames(dependency.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     dependency.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(dependency.share.signature.low)
     dim(dependency.share.signature.low)
     # 33 267
-    dependency.share.signature.mid = dependency.share[!rownames(dependency.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    dependency.share.signature.mid = dependency.share[!rownames(dependency.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     dependency.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(dependency.share.signature.mid)
     dim(dependency.share.signature.mid)
@@ -964,14 +964,14 @@ deplink <- function(signature.name,
     head(dependency.share.signature)
     dim(dependency.share.signature)
     # 327 267
-    # write.csv(dependency.share.signature, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.csv"), quote=F)
+    # write.csv(dependency.share.signature, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.csv"), quote=FALSE)
 
-    dependency.high = dependency.share.signature[dependency.share.signature$signature %like% "high",,drop=F]
+    dependency.high = dependency.share.signature[dependency.share.signature$signature %like% "high",,drop=FALSE]
     head(dependency.high)
     dim(dependency.high)
     # 27 267
-    dependency.mid = dependency.share.signature[dependency.share.signature$signature %like% "mid",,drop=F]
-    dependency.low = dependency.share.signature[dependency.share.signature$signature %like% "low",,drop=F]
+    dependency.mid = dependency.share.signature[dependency.share.signature$signature %like% "mid",,drop=FALSE]
+    dependency.low = dependency.share.signature[dependency.share.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     dependency.high.p = apply(dependency.share.signature[1:(ncol(dependency.share.signature)-1)], 2, function(x) signif(t.test(x[1:nrow(dependency.high)], x[(nrow(dependency.high)+1):nrow(dependency.share.signature)])$p.value,5))
@@ -994,7 +994,7 @@ deplink <- function(signature.name,
     head(dependency.high.deg)
     dim(dependency.high.deg)
     # 4338    5
-    write.csv(dependency.high.deg, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.high.deg.csv"), quote=T)
+    write.csv(dependency.high.deg, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.high.deg.csv"), quote=TRUE)
 
     # signature.low
     dependency.low.p = apply(dependency.share.signature[1:(ncol(dependency.share.signature)-1)], 2, function(x) signif(t.test(x[1:(nrow(dependency.share.signature)-nrow(dependency.low))], x[(nrow(dependency.share.signature)-nrow(dependency.low)+1):nrow(dependency.share.signature)])$p.value,5))
@@ -1017,7 +1017,7 @@ deplink <- function(signature.name,
     head(dependency.low.deg)
     dim(dependency.low.deg)
     # 4338    5
-    write.csv(dependency.low.deg, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.low.deg.csv"), quote=T)
+    write.csv(dependency.low.deg, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.low.deg.csv"), quote=TRUE)
 
     cutoff.qvalue = 0.1
     cutoff.diff = 0.1
@@ -1029,7 +1029,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.qvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(dependency.high.deg$diff.high2other), na.omit(dependency.high.deg$diff.low2other)), y=max(na.omit((-1)*log(dependency.low.deg$qvalue, 10)), na.omit((-1)*log(dependency.high.deg$qvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(dependency.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(dependency.high.deg$diff.high2other), na.omit(dependency.high.deg$diff.low2other)), y=max(na.omit((-1)*log(dependency.low.deg$qvalue, 10)), na.omit((-1)*log(dependency.high.deg$qvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(dependency.share.signature.high)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(dependency.high.deg$qvalue < cutoff.qvalue & abs(dependency.high.deg$diff.high2other) > cutoff.diff, as.character(rownames(dependency.high.deg)), "")), size = 2, color = ifelse(dependency.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Dependency difference", y="-log10(q value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + rremove("legend") + theme_classic()
@@ -1042,7 +1042,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.qvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(na.omit(dependency.high.deg$diff.high2other), na.omit(dependency.high.deg$diff.low2other)), y=max(na.omit((-1)*log(dependency.low.deg$qvalue, 10)), na.omit((-1)*log(dependency.high.deg$qvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(dependency.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(na.omit(dependency.high.deg$diff.high2other), na.omit(dependency.high.deg$diff.low2other)), y=max(na.omit((-1)*log(dependency.low.deg$qvalue, 10)), na.omit((-1)*log(dependency.high.deg$qvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(dependency.share.signature.low)), color = "red", hjust = 0) + 
     geom_label_repel(aes(label=ifelse(dependency.low.deg$qvalue < cutoff.qvalue & abs(dependency.low.deg$diff.low2other) > cutoff.diff, as.character(rownames(dependency.low.deg)), "")), size = 2, color = ifelse(dependency.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Dependency difference", y="-log10(q value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + rremove("legend") + theme_classic()
@@ -1051,7 +1051,7 @@ deplink <- function(signature.name,
     # Arranging the plot using cowplot
     p = suppressWarnings(plot_grid(p1, p2, ncol = 2, align = "hv", rel_widths = c(1,1), rel_heights = c(1,1)))
     p <- ggplotGrob(p)
-    ggsave(paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.high.low.deg.q", cutoff.qvalue, ".pdf"), p, width=8.5, height=4.5, limitsize=F, device="pdf")
+    ggsave(paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.high.low.deg.q", cutoff.qvalue, ".pdf"), p, width=8.5, height=4.5, limitsize=FALSE, device="pdf")
 
     message("[07/14] Analysis-dependency: done!")
     #############################################
@@ -1063,17 +1063,17 @@ deplink <- function(signature.name,
     dim(expression.share)
     # 554 16950
 
-    expression.share.signature.high = expression.share[rownames(expression.share) %in% rownames(dep.t.signature.high),,drop=F]
+    expression.share.signature.high = expression.share[rownames(expression.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     expression.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(expression.share.signature.high)
     dim(expression.share.signature.high)
     # 27 267
-    expression.share.signature.low = expression.share[rownames(expression.share) %in% rownames(dep.t.signature.low),,drop=F]
+    expression.share.signature.low = expression.share[rownames(expression.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     expression.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(expression.share.signature.low)
     dim(expression.share.signature.low)
     # 33 267
-    expression.share.signature.mid = expression.share[!rownames(expression.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    expression.share.signature.mid = expression.share[!rownames(expression.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     expression.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(expression.share.signature.mid)
     dim(expression.share.signature.mid)
@@ -1083,14 +1083,14 @@ deplink <- function(signature.name,
     head(expression.share.signature)
     dim(expression.share.signature)
     # 327 267
-    # write.csv(expression.share.signature, paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.csv"), quote=F)
+    # write.csv(expression.share.signature, paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.csv"), quote=FALSE)
 
-    expression.high = expression.share.signature[expression.share.signature$signature %like% "high",,drop=F]
+    expression.high = expression.share.signature[expression.share.signature$signature %like% "high",,drop=FALSE]
     head(expression.high)
     dim(expression.high)
     # 27 267
-    expression.mid = expression.share.signature[expression.share.signature$signature %like% "mid",,drop=F]
-    expression.low = expression.share.signature[expression.share.signature$signature %like% "low",,drop=F]
+    expression.mid = expression.share.signature[expression.share.signature$signature %like% "mid",,drop=FALSE]
+    expression.low = expression.share.signature[expression.share.signature$signature %like% "low",,drop=FALSE]
 
     # signature.high
     expression.high.p = apply(expression.share.signature[1:(ncol(expression.share.signature)-1)], 2, function(x) signif(t.test(x[1:nrow(expression.high)], x[(nrow(expression.high)+1):nrow(expression.share.signature)])$p.value,5))
@@ -1113,7 +1113,7 @@ deplink <- function(signature.name,
     head(expression.high.deg)
     dim(expression.high.deg)
     # 4338    5
-    write.csv(expression.high.deg, paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.deg.csv"), quote=T)
+    write.csv(expression.high.deg, paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.deg.csv"), quote=TRUE)
 
     # signature.low
     expression.low.p = apply(expression.share.signature[1:(ncol(expression.share.signature)-1)], 2, function(x) signif(t.test(x[1:(nrow(expression.share.signature)-nrow(expression.low))], x[(nrow(expression.share.signature)-nrow(expression.low)+1):nrow(expression.share.signature)])$p.value,5))
@@ -1136,10 +1136,10 @@ deplink <- function(signature.name,
     head(expression.low.deg)
     dim(expression.low.deg)
     # 4338    5
-    write.csv(expression.low.deg, paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.low.deg.csv"), quote=T)
+    write.csv(expression.low.deg, paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.low.deg.csv"), quote=TRUE)
 
-    expression.high.deg = read.csv(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.deg.csv"), header=T, row.names=1)
-    expression.low.deg = read.csv(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.low.deg.csv"), header=T, row.names=1)
+    expression.high.deg = read.csv(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.deg.csv"), header=TRUE, row.names=1)
+    expression.low.deg = read.csv(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.low.deg.csv"), header=TRUE, row.names=1)
     cutoff.qvalue = 0.1
     cutoff.fc = 2
     set.seed(42)
@@ -1150,7 +1150,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.qvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = log(cutoff.fc,2), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*log(cutoff.fc,2), linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(log(expression.high.deg$fc.high2other[is.finite(expression.high.deg$fc.high2other) & expression.high.deg$fc.high2other > 0], 2))*0.9, y=max(na.omit((-1)*log(expression.low.deg$qvalue, 10)), na.omit((-1)*log(expression.high.deg$qvalue, 10)))*1.1, parse=F, label = paste0("Signature.high cell lines: ", nrow(expression.share.signature.high)), color = "red", hjust = 0) + 
+    annotate("text", x=min(log(expression.high.deg$fc.high2other[is.finite(expression.high.deg$fc.high2other) & expression.high.deg$fc.high2other > 0], 2))*0.9, y=max(na.omit((-1)*log(expression.low.deg$qvalue, 10)), na.omit((-1)*log(expression.high.deg$qvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(expression.share.signature.high)), color = "red", hjust = 0) + 
     # geom_label_repel(aes(label=ifelse(expression.high.deg$qvalue < (cutoff.qvalue) & abs(log(expression.high.deg$fc.high2other,2)) > log(cutoff.fc,2), as.character(rownames(expression.high.deg)), "")), size = 2, color = ifelse(expression.high.deg$fc.high2other < 0, "blue", "red"), segment.size=0.2) +
     labs(x="Expression fold change (log2)", y="-log10(q value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + rremove("legend") + theme_classic()
@@ -1163,7 +1163,7 @@ deplink <- function(signature.name,
     geom_hline(yintercept = (-1)*log(cutoff.qvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = log(cutoff.fc,2), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = (-1)*log(cutoff.fc,2), linetype="dashed", colour="grey30", size=0.2) + 
-    annotate("text", x=min(log(expression.low.deg$fc.low2other[is.finite(expression.low.deg$fc.low2other) & expression.low.deg$fc.low2other > 0], 2))*0.9, y=max(na.omit((-1)*log(expression.low.deg$qvalue, 10)), na.omit((-1)*log(expression.high.deg$qvalue, 10)))*1.1, parse=F, label = paste0("Signature.low cell lines: ", nrow(expression.share.signature.low)), color = "red", hjust = 0) + 
+    annotate("text", x=min(log(expression.low.deg$fc.low2other[is.finite(expression.low.deg$fc.low2other) & expression.low.deg$fc.low2other > 0], 2))*0.9, y=max(na.omit((-1)*log(expression.low.deg$qvalue, 10)), na.omit((-1)*log(expression.high.deg$qvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(expression.share.signature.low)), color = "red", hjust = 0) + 
     # geom_label_repel(aes(label=ifelse(expression.low.deg$qvalue < (cutoff.qvalue) & abs(log(expression.low.deg$fc.low2other,2)) > log(cutoff.fc,2), as.character(rownames(expression.low.deg)), "")), size = 2, color = ifelse(expression.low.deg$fc.low2other < 0, "blue", "red"), segment.size=0.2) +
     labs(x="Expression fold change (log2)", y="-log10(q value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + rremove("legend") + theme_classic()
@@ -1172,7 +1172,7 @@ deplink <- function(signature.name,
     # Arranging the plot using cowplot
     p = suppressWarnings(plot_grid(p1, p2, ncol = 2, align = "hv", rel_widths = c(1,1), rel_heights = c(1,1)))
     p <- ggplotGrob(p)
-    ggsave(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.low.deg.q", cutoff.qvalue, ".pdf"), p, width=8.5, height=4.5, limitsize=F, device="pdf")
+    ggsave(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.low.deg.q", cutoff.qvalue, ".pdf"), p, width=8.5, height=4.5, limitsize=FALSE, device="pdf")
 
     message("[08/14] Analysis-expression: done!")
     #############################################
@@ -1182,22 +1182,22 @@ deplink <- function(signature.name,
     # Tumor Mutation burden
     dir.create(file.path(outputDir, signature.name, "genome.instability/TMB"), showWarnings = FALSE)
 
-    TMB.share = TMB[rownames(TMB) %in% rownames(dep.t.signature),,drop=F]
+    TMB.share = TMB[rownames(TMB) %in% rownames(dep.t.signature),,drop=FALSE]
     head(TMB.share)
     dim(TMB.share)
     # 554   1
 
-    TMB.share.signature.high = TMB.share[rownames(TMB.share) %in% rownames(dep.t.signature.high),,drop=F]
+    TMB.share.signature.high = TMB.share[rownames(TMB.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     TMB.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(TMB.share.signature.high)
     dim(TMB.share.signature.high)
     # 56  2
-    TMB.share.signature.low = TMB.share[rownames(TMB.share) %in% rownames(dep.t.signature.low),,drop=F]
+    TMB.share.signature.low = TMB.share[rownames(TMB.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     TMB.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(TMB.share.signature.low)
     dim(TMB.share.signature.low)
     # 56  2
-    TMB.share.signature.mid = TMB.share[!rownames(TMB.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    TMB.share.signature.mid = TMB.share[!rownames(TMB.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     TMB.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(TMB.share.signature.mid)
     dim(TMB.share.signature.mid)
@@ -1207,12 +1207,12 @@ deplink <- function(signature.name,
     head(TMB.share.signature)
     dim(TMB.share.signature)
     # 554   2
-    write.csv(TMB.share.signature, paste0("genome.instability/TMB/dep_", signature.name, "_hml", cutoff.percentile, "_TMB.csv"), quote=T)
-    # write.csv(TMB.share.signature, paste0("genome.instability/TMB/dep_", signature.name, "_hml", cutoff.percentile, "_TMB.sig.csv"), quote=T)
+    write.csv(TMB.share.signature, paste0("genome.instability/TMB/dep_", signature.name, "_hml", cutoff.percentile, "_TMB.csv"), quote=TRUE)
+    # write.csv(TMB.share.signature, paste0("genome.instability/TMB/dep_", signature.name, "_hml", cutoff.percentile, "_TMB.sig.csv"), quote=TRUE)
 
-    group.high = TMB.share.signature[TMB.share.signature$signature %like% "high",,drop=F]
-    group.mid = TMB.share.signature[TMB.share.signature$signature %like% "mid",,drop=F]
-    group.low = TMB.share.signature[TMB.share.signature$signature %like% "low",,drop=F]
+    group.high = TMB.share.signature[TMB.share.signature$signature %like% "high",,drop=FALSE]
+    group.mid = TMB.share.signature[TMB.share.signature$signature %like% "mid",,drop=FALSE]
+    group.low = TMB.share.signature[TMB.share.signature$signature %like% "low",,drop=FALSE]
     # t.test(group1[,1], group2[,1])$p.value
     # 0.001361099
     p.hm = paste("p.hm = ", signif(t.test(group.high$TMB, group.mid$TMB)$p.value, 4))
@@ -1225,9 +1225,9 @@ deplink <- function(signature.name,
     p1 <- ggplot(TMB.share.signature, aes(x=signature, y= log10(TMB), fill=signature)) + 
       geom_violin(trim=FALSE, linetype="blank", na.rm=TRUE)+
       geom_boxplot(width=0.05, fill="white", outlier.size=0.1, na.rm=TRUE)+
-      annotate("text", x=0.5, y=log10(max(na.omit(TMB.share.signature$TMB))*1.5), parse=F, hjust=0, label = p.hm)+
-      annotate("text", x=0.5, y=log10(max(na.omit(TMB.share.signature$TMB))*1.1), parse=F, hjust=0, label = p.hl)+
-      annotate("text", x=0.5, y=log10(max(na.omit(TMB.share.signature$TMB))*0.8), parse=F, hjust=0, label = p.ml)+
+      annotate("text", x=0.5, y=log10(max(na.omit(TMB.share.signature$TMB))*1.5), parse=FALSE, hjust=0, label = p.hm)+
+      annotate("text", x=0.5, y=log10(max(na.omit(TMB.share.signature$TMB))*1.1), parse=FALSE, hjust=0, label = p.hl)+
+      annotate("text", x=0.5, y=log10(max(na.omit(TMB.share.signature$TMB))*0.8), parse=FALSE, hjust=0, label = p.ml)+
       labs(title=paste0("TMB of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "TMB (log10)") +  theme_classic() + rremove("legend")
     ggsave(paste0("genome.instability/TMB/dep_", signature.name, "_hml", cutoff.percentile, "_TMB.pdf"), p1, width=3, height=4)
 
@@ -1237,22 +1237,22 @@ deplink <- function(signature.name,
     # CNV
     dir.create(file.path(outputDir, signature.name, "genome.instability/CNV"), showWarnings = FALSE)
 
-    CNV.share = CNV[rownames(CNV) %in% rownames(dep.t.signature),,drop=F]
+    CNV.share = CNV[rownames(CNV) %in% rownames(dep.t.signature),,drop=FALSE]
     head(CNV.share)
     dim(CNV.share)
     # 554   3
 
-    CNV.share.signature.high = CNV.share[rownames(CNV.share) %in% rownames(dep.t.signature.high),,drop=F]
+    CNV.share.signature.high = CNV.share[rownames(CNV.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     CNV.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(CNV.share.signature.high)
     dim(CNV.share.signature.high)
     # 56  2
-    CNV.share.signature.low = CNV.share[rownames(CNV.share) %in% rownames(dep.t.signature.low),,drop=F]
+    CNV.share.signature.low = CNV.share[rownames(CNV.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     CNV.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(CNV.share.signature.low)
     dim(CNV.share.signature.low)
     # 56  2
-    CNV.share.signature.mid = CNV.share[!rownames(CNV.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    CNV.share.signature.mid = CNV.share[!rownames(CNV.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     CNV.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(CNV.share.signature.mid)
     dim(CNV.share.signature.mid)
@@ -1262,11 +1262,11 @@ deplink <- function(signature.name,
     head(CNV.share.signature)
     dim(CNV.share.signature)
     # 554   2
-    write.csv(CNV.share.signature, paste0("genome.instability/CNV/dep_", signature.name, "_hml", cutoff.percentile, "_CNV.csv"), quote=T)
+    write.csv(CNV.share.signature, paste0("genome.instability/CNV/dep_", signature.name, "_hml", cutoff.percentile, "_CNV.csv"), quote=TRUE)
 
-    group.high = CNV.share.signature[CNV.share.signature$signature %like% "high",,drop=F]
-    group.mid = CNV.share.signature[CNV.share.signature$signature %like% "mid",,drop=F]
-    group.low = CNV.share.signature[CNV.share.signature$signature %like% "low",,drop=F]
+    group.high = CNV.share.signature[CNV.share.signature$signature %like% "high",,drop=FALSE]
+    group.mid = CNV.share.signature[CNV.share.signature$signature %like% "mid",,drop=FALSE]
+    group.low = CNV.share.signature[CNV.share.signature$signature %like% "low",,drop=FALSE]
     # t.test(group1[,1], group2[,1])$p.value
     # 0.001361099
     p.hm = paste("p.hm = ", signif(t.test(group.high$CNV, group.mid$CNV)$p.value, 4))
@@ -1279,9 +1279,9 @@ deplink <- function(signature.name,
     p1 <- ggplot(CNV.share.signature, aes(x=signature, y= log10(CNV), fill=signature)) + 
       geom_violin(trim=FALSE, linetype="blank", na.rm=TRUE)+
       geom_boxplot(width=0.05, fill="white", outlier.size=0.1, na.rm=TRUE)+
-      annotate("text", x=0.5, y=log10(max(na.omit(CNV.share.signature$CNV))*1.5), parse=F, hjust=0, label = p.hm)+
-      annotate("text", x=0.5, y=log10(max(na.omit(CNV.share.signature$CNV))*1.1), parse=F, hjust=0, label = p.hl)+
-      annotate("text", x=0.5, y=log10(max(na.omit(CNV.share.signature$CNV))*0.8), parse=F, hjust=0, label = p.ml)+
+      annotate("text", x=0.5, y=log10(max(na.omit(CNV.share.signature$CNV))*1.5), parse=FALSE, hjust=0, label = p.hm)+
+      annotate("text", x=0.5, y=log10(max(na.omit(CNV.share.signature$CNV))*1.1), parse=FALSE, hjust=0, label = p.hl)+
+      annotate("text", x=0.5, y=log10(max(na.omit(CNV.share.signature$CNV))*0.8), parse=FALSE, hjust=0, label = p.ml)+
       labs(title=paste0("CNV of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "CNV (log10)") +  theme_classic() + rremove("legend")
     ggsave(paste0("genome.instability/CNV/dep_", signature.name, "_hml", cutoff.percentile, "_CNV.pdf"), p1, width=3, height=4)
 
@@ -1291,22 +1291,22 @@ deplink <- function(signature.name,
     # MSI
     dir.create(file.path(outputDir, signature.name, "genome.instability/MSI"), showWarnings = FALSE)
 
-    MSI.share = MSI[rownames(MSI) %in% rownames(dep.t.signature),,drop=F]
+    MSI.share = MSI[rownames(MSI) %in% rownames(dep.t.signature),,drop=FALSE]
     head(MSI.share)
     dim(MSI.share)
     # 474  11
 
-    MSI.share.signature.high = MSI.share[rownames(MSI.share) %in% rownames(dep.t.signature.high),,drop=F]
+    MSI.share.signature.high = MSI.share[rownames(MSI.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     MSI.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(MSI.share.signature.high)
     dim(MSI.share.signature.high)
     # 56  2
-    MSI.share.signature.low = MSI.share[rownames(MSI.share) %in% rownames(dep.t.signature.low),,drop=F]
+    MSI.share.signature.low = MSI.share[rownames(MSI.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     MSI.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(MSI.share.signature.low)
     dim(MSI.share.signature.low)
     # 56  2
-    MSI.share.signature.mid = MSI.share[!rownames(MSI.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    MSI.share.signature.mid = MSI.share[!rownames(MSI.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     MSI.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(MSI.share.signature.mid)
     dim(MSI.share.signature.mid)
@@ -1316,12 +1316,12 @@ deplink <- function(signature.name,
     head(MSI.share.signature)
     dim(MSI.share.signature)
     # 554   2
-    write.csv(MSI.share.signature, paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.csv"), quote=T)
-    # write.csv(MSI.share.signature, paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.GDSC.csv"), quote=T)
+    write.csv(MSI.share.signature, paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.csv"), quote=TRUE)
+    # write.csv(MSI.share.signature, paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.GDSC.csv"), quote=TRUE)
 
-    group.high = MSI.share.signature[MSI.share.signature$signature %like% "high",,drop=F]
-    group.mid = MSI.share.signature[MSI.share.signature$signature %like% "mid",,drop=F]
-    group.low = MSI.share.signature[MSI.share.signature$signature %like% "low",,drop=F]
+    group.high = MSI.share.signature[MSI.share.signature$signature %like% "high",,drop=FALSE]
+    group.mid = MSI.share.signature[MSI.share.signature$signature %like% "mid",,drop=FALSE]
+    group.low = MSI.share.signature[MSI.share.signature$signature %like% "low",,drop=FALSE]
     # t.test(group1[,1], group2[,1])$p.value
     # 0.001361099
     p.hm = paste("p.hm = ", signif(t.test(group.high$MSI, group.mid$MSI)$p.value, 4))
@@ -1334,9 +1334,9 @@ deplink <- function(signature.name,
     p1 <- ggplot(MSI.share.signature, aes(x=signature, y= log10(MSI), fill=signature)) + 
       geom_violin(trim=FALSE, linetype="blank", na.rm=TRUE)+
       geom_boxplot(width=0.05, fill="white", outlier.size=0.1, na.rm=TRUE)+
-      annotate("text", x=0.5, y=log10(max(na.omit(MSI.share.signature$MSI))*1.5), parse=F, hjust=0, label = p.hm)+
-      annotate("text", x=0.5, y=log10(max(na.omit(MSI.share.signature$MSI))*1.1), parse=F, hjust=0, label = p.hl)+
-      annotate("text", x=0.5, y=log10(max(na.omit(MSI.share.signature$MSI))*0.8), parse=F, hjust=0, label = p.ml)+
+      annotate("text", x=0.5, y=log10(max(na.omit(MSI.share.signature$MSI))*1.5), parse=FALSE, hjust=0, label = p.hm)+
+      annotate("text", x=0.5, y=log10(max(na.omit(MSI.share.signature$MSI))*1.1), parse=FALSE, hjust=0, label = p.hl)+
+      annotate("text", x=0.5, y=log10(max(na.omit(MSI.share.signature$MSI))*0.8), parse=FALSE, hjust=0, label = p.ml)+
       labs(title=paste0("MSI of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "MSI (log10)") +  theme_classic() + rremove("legend")
     # p1
     ggsave(paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.pdf"), p1, width=3, height=4)
@@ -1348,22 +1348,22 @@ deplink <- function(signature.name,
     # ISG
     dir.create(file.path(outputDir, signature.name, "ISG"), showWarnings = FALSE)
 
-    ISG.share = ISG[rownames(ISG) %in% rownames(dep.t.signature),,drop=F]
+    ISG.share = ISG[rownames(ISG) %in% rownames(dep.t.signature),,drop=FALSE]
     head(ISG.share)
     dim(ISG.share)
     # 558   9
 
-    ISG.share.signature.high = ISG.share[rownames(ISG.share) %in% rownames(dep.t.signature.high),,drop=F]
+    ISG.share.signature.high = ISG.share[rownames(ISG.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     ISG.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(ISG.share.signature.high)
     dim(ISG.share.signature.high)
     # 56  2
-    ISG.share.signature.low = ISG.share[rownames(ISG.share) %in% rownames(dep.t.signature.low),,drop=F]
+    ISG.share.signature.low = ISG.share[rownames(ISG.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     ISG.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(ISG.share.signature.low)
     dim(ISG.share.signature.low)
     # 56  2
-    ISG.share.signature.mid = ISG.share[!rownames(ISG.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    ISG.share.signature.mid = ISG.share[!rownames(ISG.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     ISG.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(ISG.share.signature.mid)
     dim(ISG.share.signature.mid)
@@ -1373,11 +1373,11 @@ deplink <- function(signature.name,
     head(ISG.share.signature)
     dim(ISG.share.signature)
     # 554   2
-    write.csv(ISG.share.signature, paste0("ISG/dep_", signature.name, "_hml", cutoff.percentile, "_ISG.csv"), quote=T)
+    write.csv(ISG.share.signature, paste0("ISG/dep_", signature.name, "_hml", cutoff.percentile, "_ISG.csv"), quote=TRUE)
 
-    group.high = ISG.share.signature[ISG.share.signature$signature %like% "high",,drop=F]
-    group.mid = ISG.share.signature[ISG.share.signature$signature %like% "mid",,drop=F]
-    group.low = ISG.share.signature[ISG.share.signature$signature %like% "low",,drop=F]
+    group.high = ISG.share.signature[ISG.share.signature$signature %like% "high",,drop=FALSE]
+    group.mid = ISG.share.signature[ISG.share.signature$signature %like% "mid",,drop=FALSE]
+    group.low = ISG.share.signature[ISG.share.signature$signature %like% "low",,drop=FALSE]
     # t.test(group1[,1], group2[,1])$p.value
     # 0.001361099
     p.hm = paste("p.hm = ", signif(t.test(group.high$ISG, group.mid$ISG)$p.value, 4))
@@ -1390,9 +1390,9 @@ deplink <- function(signature.name,
     p1 <- ggplot(ISG.share.signature, aes(x=signature, y= ISG, fill=signature)) + 
       geom_violin(trim=FALSE, linetype="blank", na.rm=TRUE)+
       geom_boxplot(width=0.05, fill="white", outlier.size=0.1, na.rm=TRUE)+
-      annotate("text", x=0.5, y=max(na.omit(ISG.share.signature$ISG))*1.2, parse=F, hjust=0, label = p.hm)+
-      annotate("text", x=0.5, y=max(na.omit(ISG.share.signature$ISG))*1.1, parse=F, hjust=0, label = p.hl)+
-      annotate("text", x=0.5, y=max(na.omit(ISG.share.signature$ISG))*1.0, parse=F, hjust=0, label = p.ml)+
+      annotate("text", x=0.5, y=max(na.omit(ISG.share.signature$ISG))*1.2, parse=FALSE, hjust=0, label = p.hm)+
+      annotate("text", x=0.5, y=max(na.omit(ISG.share.signature$ISG))*1.1, parse=FALSE, hjust=0, label = p.hl)+
+      annotate("text", x=0.5, y=max(na.omit(ISG.share.signature$ISG))*1.0, parse=FALSE, hjust=0, label = p.ml)+
       labs(title=paste0("ISG of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "ISG") +  theme_classic() + rremove("legend")
     # p1
     ggsave(paste0("ISG/dep_", signature.name, "_hml", cutoff.percentile, "_ISG.pdf"), p1, width=3, height=4)
@@ -1403,22 +1403,22 @@ deplink <- function(signature.name,
     # mRNAsi
     dir.create(file.path(outputDir, signature.name, "mRNAsi"), showWarnings = FALSE)
 
-    mRNAsi.share = mRNAsi[rownames(mRNAsi) %in% rownames(dep.t.signature),,drop=F]
+    mRNAsi.share = mRNAsi[rownames(mRNAsi) %in% rownames(dep.t.signature),,drop=FALSE]
     head(mRNAsi.share)
     dim(mRNAsi.share)
     # 554   1
 
-    mRNAsi.share.signature.high = mRNAsi.share[rownames(mRNAsi.share) %in% rownames(dep.t.signature.high),,drop=F]
+    mRNAsi.share.signature.high = mRNAsi.share[rownames(mRNAsi.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     mRNAsi.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(mRNAsi.share.signature.high)
     dim(mRNAsi.share.signature.high)
     # 56  2
-    mRNAsi.share.signature.low = mRNAsi.share[rownames(mRNAsi.share) %in% rownames(dep.t.signature.low),,drop=F]
+    mRNAsi.share.signature.low = mRNAsi.share[rownames(mRNAsi.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     mRNAsi.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(mRNAsi.share.signature.low)
     dim(mRNAsi.share.signature.low)
     # 56  2
-    mRNAsi.share.signature.mid = mRNAsi.share[!rownames(mRNAsi.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    mRNAsi.share.signature.mid = mRNAsi.share[!rownames(mRNAsi.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     mRNAsi.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(mRNAsi.share.signature.mid)
     dim(mRNAsi.share.signature.mid)
@@ -1428,11 +1428,11 @@ deplink <- function(signature.name,
     head(mRNAsi.share.signature)
     dim(mRNAsi.share.signature)
     # 554   2
-    write.csv(mRNAsi.share.signature, paste0("mRNAsi/dep_", signature.name, "_hml", cutoff.percentile, "_mRNAsi.csv"), quote=T)
+    write.csv(mRNAsi.share.signature, paste0("mRNAsi/dep_", signature.name, "_hml", cutoff.percentile, "_mRNAsi.csv"), quote=TRUE)
 
-    group.high = mRNAsi.share.signature[mRNAsi.share.signature$signature %like% "high",,drop=F]
-    group.mid = mRNAsi.share.signature[mRNAsi.share.signature$signature %like% "mid",,drop=F]
-    group.low = mRNAsi.share.signature[mRNAsi.share.signature$signature %like% "low",,drop=F]
+    group.high = mRNAsi.share.signature[mRNAsi.share.signature$signature %like% "high",,drop=FALSE]
+    group.mid = mRNAsi.share.signature[mRNAsi.share.signature$signature %like% "mid",,drop=FALSE]
+    group.low = mRNAsi.share.signature[mRNAsi.share.signature$signature %like% "low",,drop=FALSE]
     # t.test(group1[,1], group2[,1])$p.value
     # 0.001361099
     p.hm = paste("p.hm = ", signif(t.test(group.high$mRNAsi, group.mid$mRNAsi)$p.value, 4))
@@ -1445,9 +1445,9 @@ deplink <- function(signature.name,
     p1 <- ggplot(mRNAsi.share.signature, aes(x=signature, y= mRNAsi, fill=signature)) + 
       geom_violin(trim=FALSE, linetype="blank", na.rm=TRUE)+
       geom_boxplot(width=0.05, fill="white", outlier.size=0.1, na.rm=TRUE)+
-      annotate("text", x=0.5, y=max(na.omit(mRNAsi.share.signature$mRNAsi))*1.2, parse=F, hjust=0, label = p.hm)+
-      annotate("text", x=0.5, y=max(na.omit(mRNAsi.share.signature$mRNAsi))*1.1, parse=F, hjust=0, label = p.hl)+
-      annotate("text", x=0.5, y=max(na.omit(mRNAsi.share.signature$mRNAsi))*1.0, parse=F, hjust=0, label = p.ml)+
+      annotate("text", x=0.5, y=max(na.omit(mRNAsi.share.signature$mRNAsi))*1.2, parse=FALSE, hjust=0, label = p.hm)+
+      annotate("text", x=0.5, y=max(na.omit(mRNAsi.share.signature$mRNAsi))*1.1, parse=FALSE, hjust=0, label = p.hl)+
+      annotate("text", x=0.5, y=max(na.omit(mRNAsi.share.signature$mRNAsi))*1.0, parse=FALSE, hjust=0, label = p.ml)+
       labs(title=paste0("mRNAsi of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "mRNAsi") +  theme_classic() + rremove("legend")
     # p1
     ggsave(paste0("mRNAsi/dep_", signature.name, "_hml", cutoff.percentile, "_mRNAsi.pdf"), p1, width=3, height=4)
@@ -1458,22 +1458,22 @@ deplink <- function(signature.name,
     # EMT
     dir.create(file.path(outputDir, signature.name, "EMT"), showWarnings = FALSE)
 
-    EMT.share = EMT[rownames(EMT) %in% rownames(dep.t.signature),,drop=F]
+    EMT.share = EMT[rownames(EMT) %in% rownames(dep.t.signature),,drop=FALSE]
     head(EMT.share)
     dim(EMT.share)
     # 250   3
 
-    EMT.share.signature.high = EMT.share[rownames(EMT.share) %in% rownames(dep.t.signature.high),,drop=F]
+    EMT.share.signature.high = EMT.share[rownames(EMT.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
     EMT.share.signature.high$signature = paste0(signature.name, ".dep.high")
     head(EMT.share.signature.high)
     dim(EMT.share.signature.high)
     # 56  2
-    EMT.share.signature.low = EMT.share[rownames(EMT.share) %in% rownames(dep.t.signature.low),,drop=F]
+    EMT.share.signature.low = EMT.share[rownames(EMT.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
     EMT.share.signature.low$signature = paste0(signature.name, ".dep.low")
     head(EMT.share.signature.low)
     dim(EMT.share.signature.low)
     # 56  2
-    EMT.share.signature.mid = EMT.share[!rownames(EMT.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=F]
+    EMT.share.signature.mid = EMT.share[!rownames(EMT.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
     EMT.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
     head(EMT.share.signature.mid)
     dim(EMT.share.signature.mid)
@@ -1483,11 +1483,11 @@ deplink <- function(signature.name,
     head(EMT.share.signature)
     dim(EMT.share.signature)
     # 554   2
-    write.csv(EMT.share.signature, paste0("EMT/dep_", signature.name, "_hml", cutoff.percentile, "_EMT.csv"), quote=T)
+    write.csv(EMT.share.signature, paste0("EMT/dep_", signature.name, "_hml", cutoff.percentile, "_EMT.csv"), quote=TRUE)
 
-    group.high = EMT.share.signature[EMT.share.signature$signature %like% "high",,drop=F]
-    group.mid = EMT.share.signature[EMT.share.signature$signature %like% "mid",,drop=F]
-    group.low = EMT.share.signature[EMT.share.signature$signature %like% "low",,drop=F]
+    group.high = EMT.share.signature[EMT.share.signature$signature %like% "high",,drop=FALSE]
+    group.mid = EMT.share.signature[EMT.share.signature$signature %like% "mid",,drop=FALSE]
+    group.low = EMT.share.signature[EMT.share.signature$signature %like% "low",,drop=FALSE]
     # t.test(group1[,1], group2[,1])$p.value
     # 0.001361099
     p.hm = paste("p.hm = ", signif(t.test(group.high$EMT, group.mid$EMT)$p.value, 4))
@@ -1500,9 +1500,9 @@ deplink <- function(signature.name,
     p1 <- ggplot(EMT.share.signature, aes(x=signature, y= EMT, fill=signature)) + 
       geom_violin(trim=FALSE, linetype="blank", na.rm=TRUE)+
       geom_boxplot(width=0.05, fill="white", outlier.size=0.1, na.rm=TRUE)+
-      annotate("text", x=0.5, y=max(na.omit(EMT.share.signature$EMT))*1.5, parse=F, hjust=0, label = p.hm)+
-      annotate("text", x=0.5, y=max(na.omit(EMT.share.signature$EMT))*1.3, parse=F, hjust=0, label = p.hl)+
-      annotate("text", x=0.5, y=max(na.omit(EMT.share.signature$EMT))*1.1, parse=F, hjust=0, label = p.ml)+
+      annotate("text", x=0.5, y=max(na.omit(EMT.share.signature$EMT))*1.5, parse=FALSE, hjust=0, label = p.hm)+
+      annotate("text", x=0.5, y=max(na.omit(EMT.share.signature$EMT))*1.3, parse=FALSE, hjust=0, label = p.hl)+
+      annotate("text", x=0.5, y=max(na.omit(EMT.share.signature$EMT))*1.1, parse=FALSE, hjust=0, label = p.ml)+
       labs(title=paste0("EMT of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "EMT") +  theme_classic() + rremove("legend")
     # p1
     ggsave(paste0("EMT/dep_", signature.name, "_hml", cutoff.percentile, "_EMT.pdf"), p1, width=3, height=4)

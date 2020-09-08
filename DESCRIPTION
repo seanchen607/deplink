@@ -1,0 +1,29 @@
+Package: deplink
+Type: Package
+Title: Compares the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature).
+Version: 0.99.0
+Authors@R: c(
+       person("Xiao", "Chen", email = "seanchen607@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-5059-8846"))
+       )
+Description: 'deplink' compares the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature). 
+License: Artistic-2.0
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 3.5.0)
+Imports:
+    stats,
+    cowplot,
+    data.table,
+    ggplot2,
+    ggpubr,
+    ggrepel,
+    purrr,
+    wesanderson
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+BugReports: https://github.com/seanchen607/deplink/issues
+biocViews: Alignment, Annotation, Software
+RoxygenNote: 7.1.1

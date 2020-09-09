@@ -40,18 +40,18 @@ The results will be output to a local directory (default: root directory), inclu
   - [x] COSMIC categories
   - [x] Tumor mutation burden (TMB)
   - [x] Copy number variation (CNV)
-  - [x] Microsatellite instability (MSI) score
+  - [x] Microsatellite instability (MSI) 
 
 * Drug sensitivity
-  - [x] Drug sensitivity score from GDSC data set
-  - [x] Drug sensitivity score from PRISM data set
+  - [x] Drug sensitivity from GDSC data set
+  - [x] Drug sensitivity from PRISM data set
 
 * Immune infiltration
-  - [x] Immune signature gene (ISG) score
+  - [x] Immune signature gene (ISG) 
 
 * Stemness
   - [x] mRNA stemness index (mRNAsi)
-  - [x] Epithelial–mesenchymal transition (EMT) score
+  - [x] Epithelial–mesenchymal transition (EMT) 
 
 * Misc.
   - [x] Cancer type

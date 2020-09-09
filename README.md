@@ -31,30 +31,30 @@ For example, deplink compares the genetic/epigenetic features between cancer cel
 The results will be output to a local directory (default: root directory), including the comparison of the following features:
 
 * Genomic/epigenetic features
-  - Gene dependency
-  - Gene expression
-  - Chromatin Modification
+  - [x] Gene dependency
+  - [x] Gene expression
+  - [x] Chromatin modification
 
 * Genome instability
-  - Genetic mutations
-  - COSMIC
-  - TMB
-  - CNV
-  - MSI
+  - [x] Genetic mutations
+  - [x] COSMIC categories
+  - [x] Tumor mutation burden (TMB)
+  - [x] Copy number variation (CNV)
+  - [x] Microsatellite instability (MSI) score
 
 * Drug sensitivity
-  - GDSC data set
-  - PRISM data set
+  - [x] Drug sensitivity score from GDSC data set
+  - [x] Drug sensitivity score from PRISM data set
 
 * Immune infiltration
-  - ISG
+  - [x] Immune signature gene (ISG) score
 
 * Stemness
-  - mRNAsi
-  - EMT
+  - [x] mRNA stemness index (mRNAsi)
+  - [x] Epithelial–mesenchymal transition (EMT) score
 
 * Misc.
-  - cancer type
+  - [x] Cancer type
 
 
 <!--

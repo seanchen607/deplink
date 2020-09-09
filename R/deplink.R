@@ -25,9 +25,9 @@
 ##' In preparation. 
 ##' @examples
 ##' source(system.file("script", "load_libs.R", package = "deplink"))
-##' signature.name = "PRC2"
-##' signature = c("EED", "EZH2", "SUZ12")
-##' deplink(signature.name, signature, outputDir)
+##' signature.name = "9-1-1"
+##' signature = c("RAD9A", "RAD1", "HUS1", "RAD17")
+##' deplink(signature.name, signature)
 
 
 ## Main

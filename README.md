@@ -28,7 +28,7 @@ Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](
 
 For example, deplink compares the genetic/epigenetic features between cancer cell lines with different dependencies of PRC2 complex members:
 
-	deplink(signature.name = "PRC2", signature = c("EED", "EZH2", "SUZ12"))
+	deplink(signature.name = "ATM-p53", signature = c("ATM", "TP53", "TP53BP1", "CHEK2", "USP28", "CDKN1A"))
 
 The results will be output to a local directory (default: root directory) under a folder in name of the designated "signature.name" ("PRC2" in this case).
 

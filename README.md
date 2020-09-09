@@ -10,8 +10,6 @@
 
 Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](https://portals.broadinstitute.org/ccle)
 
-<embed src="https://drive.google.com/viewerng/viewer?embedded=true&url=docs/dep_9-1-1_score_CancerType.TCGA.dotplot.pdf" type='application/pdf'>
-
 <!--
 <a href="https://doi.org/10.1111/1755-0998.13023"><img src="docs/schematic.png" height="100" align="center" /></a>
 -->

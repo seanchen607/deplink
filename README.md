@@ -8,6 +8,8 @@
 
 ‘deplink’ compares the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature).
 
+Data source: [DepMap](https://depmap.org/portal/) *version 2019q4* and [CCLE](https://portals.broadinstitute.org/ccle)
+
 <!--
 <a href="https://doi.org/10.1111/1755-0998.13023"><img src="docs/schematic.png" height="100" align="center" /></a>
 -->

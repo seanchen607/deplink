@@ -611,7 +611,7 @@ deplink <- function(signature.name,
     #############################################
  
     # Drug sensitivity
-    dir.create(file.path(outputDir, signature.name, "drug"), showWarnings = FALSE)
+    dir.create(file.path(outputDir, signature.name, "drug.GDSC"), showWarnings = FALSE)
 
     drug.share = drug[rownames(drug) %in% rownames(dep.t),,drop=FALSE]
     head(drug.share)
@@ -638,7 +638,7 @@ deplink <- function(signature.name,
     head(drug.share.signature)
     dim(drug.share.signature)
     # 327 267
-    # write.csv(drug.share.signature, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.csv"), quote=FALSE)
+    # write.csv(drug.share.signature, paste0("drug.GDSC/dep_", signature.name, "_hml", cutoff.percentile, "_drug.csv"), quote=FALSE)
 
     drug.high = drug.share.signature[drug.share.signature$signature %like% "high",,drop=FALSE]
     head(drug.high)
@@ -675,7 +675,7 @@ deplink <- function(signature.name,
     head(drug.high.deg)
     dim(drug.high.deg)
     # 266   9
-    write.csv(drug.high.deg, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.deg.csv"), quote=TRUE)
+    write.csv(drug.high.deg, paste0("drug.GDSC/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.deg.csv"), quote=TRUE)
 
     # signature.low
     drug.low.p = apply(drug.share.signature[1:(ncol(drug.share.signature)-1)], 2, function(x) ifelse(length(x[1:(nrow(drug.share.signature)-nrow(drug.low))][!is.na(x[1:(nrow(drug.share.signature)-nrow(drug.low))])])>1, signif(t.test(x[1:(nrow(drug.share.signature)-nrow(drug.low))], x[(nrow(drug.share.signature)-nrow(drug.low)+1):nrow(drug.share.signature)])$p.value,5), NA))
@@ -705,7 +705,7 @@ deplink <- function(signature.name,
     head(drug.low.deg)
     dim(drug.low.deg)
     # 266   9
-    write.csv(drug.low.deg, paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.low.deg.csv"), quote=TRUE)
+    write.csv(drug.low.deg, paste0("drug.GDSC/dep_", signature.name, "_hml", cutoff.percentile, "_drug.low.deg.csv"), quote=TRUE)
 
     drug.high.deg$DRUG_NAME = gsub(" \\(.+\\)", "", drug.high.deg$DRUG_NAME)
     drug.low.deg$DRUG_NAME = gsub(" \\(.+\\)", "", drug.low.deg$DRUG_NAME)
@@ -768,7 +768,7 @@ deplink <- function(signature.name,
     # Arranging the plot using cowplot
     p = suppressWarnings(plot_grid(p1, p2, p3, p4, ncol = 2, align = "hv", rel_widths = c(1,1), rel_heights = c(1,1)))
     p <- ggplotGrob(p)
-    ggsave(paste0("drug/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=FALSE, device="pdf")
+    ggsave(paste0("drug.GDSC/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=FALSE, device="pdf")
 
     message("[05/14] Analysis-drug.GDSC: done!")
     #############################################
@@ -876,53 +876,53 @@ deplink <- function(signature.name,
     # cutoff.diff = 0.2
     set.seed(42)
     p1 <- ggplot(data = drug2.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(pvalue, 10))) + 
-    geom_point(size=1, color= ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other > cutoff.diff, "blue", ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other < cutoff.diff*(-1), "red", "grey60")))+ 
+    geom_point(size=1, color= ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other > 3*cutoff.diff, "blue", ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other < 3*cutoff.diff*(-1), "red", "grey60")))+ 
     # xlim(-1.5,1.5) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = 3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(drug2.share.signature.high)), color = "red", hjust = 0) + 
-    geom_label_repel(aes(label=ifelse(drug2.high.deg$pvalue < cutoff.pvalue & abs(drug2.high.deg$diff.high2other) > cutoff.diff, as.character(drug2.high.deg$name), "")), size = 2, color = ifelse(drug2.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
+    geom_label_repel(aes(label=ifelse(drug2.high.deg$pvalue < cutoff.pvalue & abs(drug2.high.deg$diff.high2other) > 3*cutoff.diff, as.character(drug2.high.deg$name), "")), size = 2, color = ifelse(drug2.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
     # p1
 
     p2 <- ggplot(data = drug2.low.deg, mapping = aes(x = diff.low2other, y = (-1)*log(pvalue, 10))) + 
-    geom_point(size=1, color= ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other > cutoff.diff, "blue", ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other < cutoff.diff*(-1), "red", "grey60")))+ 
+    geom_point(size=1, color= ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other > 3*cutoff.diff, "blue", ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other < 3*cutoff.diff*(-1), "red", "grey60")))+ 
     # xlim(-1.5,1.5) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = 3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(drug2.share.signature.low)), color = "red", hjust = 0) + 
-    geom_label_repel(aes(label=ifelse(drug2.low.deg$pvalue < cutoff.pvalue & abs(drug2.low.deg$diff.low2other) > cutoff.diff, as.character(drug2.low.deg$name), "")), size = 2, color = ifelse(drug2.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
+    geom_label_repel(aes(label=ifelse(drug2.low.deg$pvalue < cutoff.pvalue & abs(drug2.low.deg$diff.low2other) > 3*cutoff.diff, as.character(drug2.low.deg$name), "")), size = 2, color = ifelse(drug2.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
     # p2
 
     p3 <- ggplot(data = drug2.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(pvalue, 10))) + 
-    geom_point(size=1, color= ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other > cutoff.diff, "blue", ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other < cutoff.diff*(-1), "red", "grey60")))+ 
+    geom_point(size=1, color= ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other > 3*cutoff.diff, "blue", ifelse(drug2.high.deg$pvalue < cutoff.pvalue & drug2.high.deg$diff.high2other < 3*cutoff.diff*(-1), "red", "grey60")))+ 
     # xlim(-1.5,1.5) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = 3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(drug2.share.signature.high)), color = "red", hjust = 0) + 
-    geom_label_repel(aes(label=ifelse(drug2.high.deg$pvalue < cutoff.pvalue & abs(drug2.high.deg$diff.high2other) > cutoff.diff, as.character(drug2.high.deg$moa), "")), size = 2, color = ifelse(drug2.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
+    geom_label_repel(aes(label=ifelse(drug2.high.deg$pvalue < cutoff.pvalue & abs(drug2.high.deg$diff.high2other) > 3*cutoff.diff, as.character(drug2.high.deg$moa), "")), size = 2, color = ifelse(drug2.high.deg$diff.high2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p3 <- p3 + theme_classic() + rremove("legend")
     # p3
 
     p4 <- ggplot(data = drug2.low.deg, mapping = aes(x = diff.low2other, y = (-1)*log(pvalue, 10))) + 
-    geom_point(size=1, color= ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other > cutoff.diff, "blue", ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other < cutoff.diff*(-1), "red", "grey60")))+ 
+    geom_point(size=1, color= ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other > 3*cutoff.diff, "blue", ifelse(drug2.low.deg$pvalue < cutoff.pvalue & drug2.low.deg$diff.low2other < 3*cutoff.diff*(-1), "red", "grey60")))+ 
     # xlim(-1.5,1.5) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = 3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*3*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     annotate("text", x=min(na.omit(drug2.high.deg$diff.high2other), na.omit(drug2.high.deg$diff.low2other)), y=max(na.omit((-1)*log(drug2.high.deg$pvalue, 10)), na.omit((-1)*log(drug2.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(drug2.share.signature.low)), color = "red", hjust = 0) + 
-    geom_label_repel(aes(label=ifelse(drug2.low.deg$pvalue < cutoff.pvalue & abs(drug2.low.deg$diff.low2other) > cutoff.diff, as.character(drug2.low.deg$moa), "")), size = 2, color = ifelse(drug2.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
+    geom_label_repel(aes(label=ifelse(drug2.low.deg$pvalue < cutoff.pvalue & abs(drug2.low.deg$diff.low2other) > 3*cutoff.diff, as.character(drug2.low.deg$moa), "")), size = 2, color = ifelse(drug2.low.deg$diff.low2other > 0, "blue", "red"), segment.size=0.2) +
     labs(x="Sensitivity difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p4 <- p4 + theme_classic() + rremove("legend")
     # p4
@@ -1018,8 +1018,8 @@ deplink <- function(signature.name,
     # 4338    5
     write.csv(dependency.low.deg, paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.low.deg.csv"), quote=TRUE)
 
-    cutoff.qvalue = 0.1
-    cutoff.diff = 0.1
+    # cutoff.qvalue = 0.1
+    # cutoff.diff = 0.1
     set.seed(42)
     p1 <- ggplot(data = dependency.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(qvalue, 10))) + 
     geom_point(size=1, color= ifelse(dependency.high.deg$qvalue < cutoff.qvalue & dependency.high.deg$diff.high2other > cutoff.diff, "blue", ifelse(dependency.high.deg$qvalue < cutoff.qvalue & dependency.high.deg$diff.high2other < cutoff.diff*(-1), "red", "grey60")))+ 

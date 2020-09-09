@@ -18,8 +18,44 @@
 	install_github("seanchen607/deplink")
 	
 ## :hourglass_flowing_sand: Load deplink and check help page
+
 	library(deplink)
 	?deplink
+
+## :hourglass_flowing_sand: Usage 
+
+For example, deplink compares the genetic/epigenetic features between cancer cell lines with different dependencies of PRC2 complex members:
+
+	deplink(signature.name = "PRC2", signature = c("EED", "EZH2", "SUZ12"))
+
+The results will be output to a local directory (default: root directory), including the comparison of the following features:
+
++ Genomic/epigenetic features
+o gene dependency
+o gene expression
+o Chromatin Modification
+
++ Genome instability
+o Genetic mutations
+o COSMIC
+o TMB
+o CNV
+o MSI
+
++ Drug sensitivity
+o GDSC data set
+o PRISM data set
+
++ Immune infiltration
+o ISG
+
++ Stemness
+o mRNAsi
+o EMT
+
++ Misc.
+o cancer type
+
 
 <!--
 ## :orange_book: What is Programmed Ribosomal Frameshifting (PRF)?

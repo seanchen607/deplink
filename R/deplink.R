@@ -1510,6 +1510,6 @@ deplink <- function(signature.name,
     #############################################
     
     message("*** deplink finished successfully!")
-    message(paste0("*** Please check results in output folder: ", file.path(outputDir, signature.name)))
+    message(paste0("*** Please check results in output folder: ", getwd()))
 }
 

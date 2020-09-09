@@ -26,11 +26,11 @@ Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](
 
 ## :dna: Usage 
 
-For example, deplink compares the genetic/epigenetic features between cancer cell lines with different dependencies of PRC2 complex members:
+For example, deplink compares the genetic/epigenetic features between cancer cell lines with different dependencies of "9-1-1" complex members:
 
-	deplink(signature.name = "ATM-p53", signature = c("ATM", "TP53", "TP53BP1", "CHEK2", "USP28", "CDKN1A"))
+	deplink(signature.name = "9-1-1", signature = c("RAD9A", "RAD1", "HUS1", "RAD17"))
 
-The results will be output to a local directory (default: root directory) under a folder in name of the designated "signature.name" ("PRC2" in this case).
+The results will be output to a local directory (default: root directory) under a folder in name of the designated "signature.name" ("9-1-1" in this case).
 
 Several cutoffs are set by default as below and can be changed by will. Please see the help page for more details.
 

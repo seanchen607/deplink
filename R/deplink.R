@@ -415,27 +415,27 @@ deplink <- function(signature.name,
     # cutoff.diff = 0
     set.seed(42)
     p1 <- ggplot(data = cosmic.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(pvalue, 10))) + 
-    geom_point(size=1, color= ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & cosmic.high.deg$diff.high2other > cutoff.diff, "red", ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & cosmic.high.deg$diff.high2other < cutoff.diff*(-1), "blue", "grey60")))+ 
+    geom_point(size=1, color= ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & cosmic.high.deg$diff.high2other > 100*cutoff.diff, "red", ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & cosmic.high.deg$diff.high2other < 100*cutoff.diff*(-1), "blue", "grey60")))+ 
     # xlim(-0.2,0.2) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = 100*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*100*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     annotate("text", x=min(cosmic.high.deg$diff.high2other), y=max(na.omit((-1)*log(cosmic.high.deg$pvalue, 10)), na.omit((-1)*log(cosmic.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(cosmic.share.signature.high)), color = "red", hjust = 0) + 
-    geom_label_repel(aes(label=ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & abs(cosmic.high.deg$diff.high2other) > cutoff.diff, as.character(rownames(cosmic.high.deg)), "")), size = 2, color = ifelse(cosmic.high.deg$diff.high2other > 0, "red", "blue"), segment.size=0.2) +
+    geom_label_repel(aes(label=ifelse(cosmic.high.deg$pvalue < cutoff.pvalue & abs(cosmic.high.deg$diff.high2other) > 100*cutoff.diff, as.character(rownames(cosmic.high.deg)), "")), size = 2, color = ifelse(cosmic.high.deg$diff.high2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="COSMIC difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
     p1 <- p1 + theme_classic() + rremove("legend")
     # p1
 
     p2 <- ggplot(data = cosmic.low.deg, mapping = aes(x = diff.low2other, y = (-1)*log(pvalue, 10))) + 
-    geom_point(size=1, color= ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & cosmic.low.deg$diff.low2other > cutoff.diff, "red", ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & cosmic.low.deg$diff.low2other < cutoff.diff*(-1), "blue", "grey60")))+ 
+    geom_point(size=1, color= ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & cosmic.low.deg$diff.low2other > 100*cutoff.diff, "red", ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & cosmic.low.deg$diff.low2other < 100*cutoff.diff*(-1), "blue", "grey60")))+ 
     # xlim(-0.2,0.2) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
-    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = 100*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*100*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
     annotate("text", x=min(cosmic.low.deg$diff.low2other), y=max(na.omit( (-1)*log(cosmic.high.deg$pvalue, 10)), na.omit((-1)*log(cosmic.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(cosmic.share.signature.low)), color = "red", hjust = 0) + 
-    geom_label_repel(aes(label=ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & abs(cosmic.low.deg$diff.low2other) > cutoff.diff, as.character(rownames(cosmic.low.deg)), "")), size = 2, color = ifelse(cosmic.low.deg$diff.low2other > 0, "red", "blue"), segment.size=0.2) +
+    geom_label_repel(aes(label=ifelse(cosmic.low.deg$pvalue < cutoff.pvalue & abs(cosmic.low.deg$diff.low2other) > 100*cutoff.diff, as.character(rownames(cosmic.low.deg)), "")), size = 2, color = ifelse(cosmic.low.deg$diff.low2other > 0, "red", "blue"), segment.size=0.2) +
     labs(x="COSMIC difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
     p2 <- p2 + theme_classic() + rremove("legend")
     # p2

@@ -28,7 +28,18 @@ For example, deplink compares the genetic/epigenetic features between cancer cel
 
 	deplink(signature.name = "PRC2", signature = c("EED", "EZH2", "SUZ12"))
 
-The results will be output to a local directory (default: root directory), including the comparison of the following features:
+The results will be output to a local directory (default: root directory) under a folder in name of the designated "signature.name" ("PRC2" in this case).
+
+Several cutoffs are set by default as below and can be changed by will. Please see the help page for more details.
+
+	cutoff.freq        = 10
+    cutoff.percentile  = 0.2
+    cutoff.pvalue      = 0.05
+    cutoff.qvalue      = 0.1
+    cutoff.diff        = 0.1
+    cutoff.fc          = 2
+
+The comparison covers the following features:
 
 * Genomic/epigenetic features
   - [x] Gene dependency

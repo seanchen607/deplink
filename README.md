@@ -22,7 +22,7 @@
 	library(deplink)
 	?deplink
 
-## :hourglass_flowing_sand: Usage 
+## :dna: Usage 
 
 For example, deplink compares the genetic/epigenetic features between cancer cell lines with different dependencies of PRC2 complex members:
 
@@ -30,31 +30,31 @@ For example, deplink compares the genetic/epigenetic features between cancer cel
 
 The results will be output to a local directory (default: root directory), including the comparison of the following features:
 
-+ Genomic/epigenetic features
-- gene dependency
-- gene expression
-- Chromatin Modification
+* Genomic/epigenetic features
+  - Gene dependency
+  - Gene expression
+  - Chromatin Modification
 
-+ Genome instability
-- Genetic mutations
-- COSMIC
-- TMB
-- CNV
-- MSI
+* Genome instability
+  - Genetic mutations
+  - COSMIC
+  - TMB
+  - CNV
+  - MSI
 
-+ Drug sensitivity
-- GDSC data set
-- PRISM data set
+* Drug sensitivity
+  - GDSC data set
+  - PRISM data set
 
-+ Immune infiltration
-- ISG
+* Immune infiltration
+  - ISG
 
-+ Stemness
-- mRNAsi
-- EMT
+* Stemness
+  - mRNAsi
+  - EMT
 
-+ Misc.
-- cancer type
+* Misc.
+  - cancer type
 
 
 <!--

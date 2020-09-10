@@ -11,6 +11,16 @@
 Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](https://portals.broadinstitute.org/ccle)
 
 <!--
+<object data="docs/dep_9-1-1_score_CancerType.TCGA.dotplot.pdf" type="application/pdf" width="700px" height="200px">
+    <embed src="docs/dep_9-1-1_score_CancerType.TCGA.dotplot.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="docs/dep_9-1-1_score_CancerType.TCGA.dotplot.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
+
+<embed src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://github.com/seanchen607/deplink/raw/master/docs/dep_9-1-1_score_CancerType.TCGA.dotplot.pdf" type='application/pdf'>
+-->
+
+<!--
 <a href="https://doi.org/10.1111/1755-0998.13023"><img src="docs/schematic.png" height="100" align="center" /></a>
 -->
 
@@ -22,17 +32,17 @@ Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](
 ## :hourglass_flowing_sand: Load deplink and check help page
 
 	library(deplink)
-	?deplink
+	source(system.file("script", "load_libs.R", package = "deplink"))
 
 ## :dna: Usage 
 
-For example, deplink compares the genetic/epigenetic features between cancer cell lines with different dependencies of "9-1-1" complex members:
+For example, deplink compares the genetic/epigenetic features between cancer cell lines with highest and lowest dependencies of "9-1-1" complex members:
 
 	deplink(signature.name = "9-1-1", signature = c("RAD9A", "RAD1", "HUS1", "RAD17"))
 
 The results will be output to a local directory (default: root directory) under a folder in name of the designated "signature.name" ("9-1-1" in this case).
 
-Several cutoffs are set by default as below and can be changed by will. Please see the help page for more details.
+Several cutoffs are set by default as below and can be changed by will. Please see the help page for more details (*?deplink*).
 
 	cutoff.freq        = 10
     cutoff.percentile  = 0.2
@@ -44,13 +54,13 @@ Several cutoffs are set by default as below and can be changed by will. Please s
 The comparison covers the following features:
 
 * Genomic/epigenetic features
-  - [x] Gene dependency
+  - [x] Genetic dependency
   - [x] Gene expression
   - [x] Chromatin modification
 
 * Genome instability
-  - [x] Genetic mutations
-  - [x] COSMIC categories
+  - [x] Genetic mutation
+  - [x] COSMIC signature
   - [x] Tumor mutation burden (TMB)
   - [x] Copy number variation (CNV)
   - [x] Microsatellite instability (MSI) 

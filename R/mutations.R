@@ -184,7 +184,7 @@ mutations <- function(signature.name,
     set.seed(42)
     p1 <- ggplot(data = mutation.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(pvalue, 10))) + 
     geom_point(size=1, color= ifelse(mutation.high.deg$pvalue < cutoff.pvalue & mutation.high.deg$diff.high2other > cutoff.diff, "red", ifelse(mutation.high.deg$pvalue < cutoff.pvalue & mutation.high.deg$diff.high2other < cutoff.diff*(-1), "blue", "grey60")))+ 
-    xlim(-0.2,0.2) + 
+    # xlim(-0.2,0.2) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
@@ -197,7 +197,7 @@ mutations <- function(signature.name,
 
     p2 <- ggplot(data = mutation.low.deg, mapping = aes(x = diff.low2other, y = (-1)*log(pvalue, 10))) + 
     geom_point(size=1, color= ifelse(mutation.low.deg$pvalue < cutoff.pvalue & mutation.low.deg$diff.low2other > cutoff.diff, "red", ifelse(mutation.low.deg$pvalue < cutoff.pvalue & mutation.low.deg$diff.low2other < cutoff.diff*(-1), "blue", "grey60")))+ 
-    xlim(-0.2,0.2) + 
+    # xlim(-0.2,0.2) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
@@ -210,7 +210,7 @@ mutations <- function(signature.name,
 
     p3 <- ggplot(data = mutation.high2low.deg, mapping = aes(x = diff.high2low, y = (-1)*log(pvalue, 10))) + 
     geom_point(size=1, color= ifelse(mutation.high2low.deg$pvalue < cutoff.pvalue & mutation.high2low.deg$diff.high2low > cutoff.diff, "red", ifelse(mutation.high2low.deg$pvalue < cutoff.pvalue & mutation.high2low.deg$diff.high2low < cutoff.diff*(-1), "blue", "grey60")))+ 
-    xlim(-0.2,0.2) + 
+    # xlim(-0.2,0.2) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 

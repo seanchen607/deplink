@@ -156,7 +156,7 @@ dependency <- function(signature.name,
     set.seed(42)
     p1 <- ggplot(data = dependency.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(qvalue, 10))) + 
     geom_point(size=1, color= ifelse(dependency.high.deg$qvalue < cutoff.qvalue & dependency.high.deg$diff.high2other > cutoff.diff, "blue", ifelse(dependency.high.deg$qvalue < cutoff.qvalue & dependency.high.deg$diff.high2other < cutoff.diff*(-1), "red", "grey60")))+ 
-    xlim(-0.5,0.5) + 
+    # xlim(-0.5,0.5) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.qvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
@@ -169,7 +169,7 @@ dependency <- function(signature.name,
 
     p2 <- ggplot(data = dependency.low.deg, mapping = aes(x = diff.low2other, y = (-1)*log(qvalue, 10))) + 
     geom_point(size=1, color= ifelse(dependency.low.deg$qvalue < cutoff.qvalue & dependency.low.deg$diff.low2other > cutoff.diff, "blue", ifelse(dependency.low.deg$qvalue < cutoff.qvalue & dependency.low.deg$diff.low2other < cutoff.diff*(-1), "red", "grey60")))+ 
-    xlim(-0.5,0.5) + 
+    # xlim(-0.5,0.5) + 
     # ylim(0,4) + 
     geom_hline(yintercept = (-1)*log(cutoff.qvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
     geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 

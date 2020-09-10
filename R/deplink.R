@@ -97,22 +97,36 @@ deplink <- function(signature.name,
 
     # Pie Chart from data frame with Appended Sample Sizes
     # high
-    pdf(paste0("meta/dep_", signature.name, "_score.high_pie.Primary.pdf"), width=6, height=4)
     mytable <- table(meta.signature.high$disease)
     lbls <- paste(names(mytable), " : ", mytable, sep="")
     lbls = gsub(".+ : 0", NA, as.list(lbls))
-    pie(mytable, labels = NA, main=paste0("Primary cancer types of ", signature.name, " signature.high"), cex=0.5, col=rainbow(length(mytable)))
-    legend("right",legend=lbls[!is.na(lbls)], bty="n", cex=0.4, fill=rainbow(length(mytable))[!is.na(lbls)])
-    dev.off()
+    color = rainbow(length(mytable))
+    names(color) = names(mytable)
+    
+    p1 = ggplot(data = as.data.frame(mytable[mytable>0]), aes(x = "", y = Freq, fill = Var1))+
+    geom_bar(stat = "identity", col = "grey30")+
+    coord_polar("y", start = 0) +
+    geom_text(aes(label = Freq), position = position_stack(vjust = 0.5), col = "black") +
+    theme_void() + 
+    labs(fill = "Cancer Type") +
+    scale_fill_manual(values = color)
+    ggsave(paste0("meta/dep_", signature.name, "_score.high_pie.Primary.pdf"), p1, width=8, height=6)
 
     # low
-    pdf(paste0("meta/dep_", signature.name, "_score.low_pie.Primary.pdf"), width=6, height=4)
     mytable <- table(meta.signature.low$disease)
     lbls <- paste(names(mytable), " : ", mytable, sep="")
     lbls = gsub(".+ : 0", NA, as.list(lbls))
-    pie(mytable, labels = NA, main=paste0("Primary cancer types of ", signature.name, " signature.low"), cex=0.5, col=rainbow(length(mytable)))
-    legend("right",legend=lbls[!is.na(lbls)], bty="n", cex=0.4, fill=rainbow(length(mytable))[!is.na(lbls)])
-    dev.off()
+    color = rainbow(length(mytable))
+    names(color) = names(mytable)
+    
+    p2 = ggplot(data = as.data.frame(mytable[mytable>0]), aes(x = "", y = Freq, fill = Var1))+
+    geom_bar(stat = "identity", col = "grey30")+
+    coord_polar("y", start = 0) +
+    geom_text(aes(label = Freq), position = position_stack(vjust = 0.5), col = "black") +
+    theme_void() + 
+    labs(fill = "Cancer Type") +
+    scale_fill_manual(values = color)
+    ggsave(paste0("meta/dep_", signature.name, "_score.low_pie.Primary.pdf"), p2, width=8, height=6)
 
     primary.pair = intersect(meta.signature.high$disease, meta.signature.low$disease)
     head(primary.pair)
@@ -610,7 +624,7 @@ deplink <- function(signature.name,
     message("[04/14] Analysis-mutation: done!")
     #############################################
  
-    # Drug sensitivity
+    # Drug sensitivity - GDSC
     dir.create(file.path(outputDir, signature.name, "drug.GDSC"), showWarnings = FALSE)
 
     drug.share = drug[rownames(drug) %in% rownames(dep.t),,drop=FALSE]
@@ -773,7 +787,7 @@ deplink <- function(signature.name,
     message("[05/14] Analysis-drug.GDSC: done!")
     #############################################
 
-    # Drug sensitivity2
+    # Drug sensitivity - PRISM
     dir.create(file.path(outputDir, signature.name, "drug.PRISM"), showWarnings = FALSE)
     drug2.share = drug2[rownames(drug2) %in% rownames(dep.t),,drop=FALSE]
     head(drug2.share)
@@ -1287,7 +1301,7 @@ deplink <- function(signature.name,
     message("[10/14] Analysis-CNV: done!")
     #############################################
 
-    # MSI
+    # Microsatellite instability (MSI)
     dir.create(file.path(outputDir, signature.name, "genome.instability/MSI"), showWarnings = FALSE)
 
     MSI.share = MSI[rownames(MSI) %in% rownames(dep.t.signature),,drop=FALSE]

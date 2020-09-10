@@ -29,7 +29,7 @@ Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](
 	library(devtools)
 	install_github("seanchen607/deplink")
 	
-## :hourglass_flowing_sand: Load deplink and check help page
+## :hourglass_flowing_sand: Load deplink and data libraries
 
 	library(deplink)
 	source(system.file("script", "load_libs.R", package = "deplink"))

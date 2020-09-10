@@ -1,0 +1,259 @@
+---
+title: "deplink: compares the genetic/epigenetic features between cancer cell lines with different dependencies of a gene set (signature)"
+author: "Xiao Chen\\
+
+        Columbia University Medical Center"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    toc: true
+    theme: cayman
+    highlight: github
+  pdf_document:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{deplink}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+```{r style, echo=FALSE, results="asis", message=FALSE}
+knitr::opts_chunk$set(tidy = FALSE, message = FALSE, fig.width=8.5, fig.height=4.5, fig.align = "center")
+```
+
+
+```{r echo=FALSE}
+CRANpkg <- function (pkg) {
+    cran <- "https://CRAN.R-project.org/package"
+    fmt <- "[%s](%s=%s)"
+    sprintf(fmt, pkg, cran, pkg)
+}
+
+Biocpkg <- function (pkg) {
+    sprintf("[%s](http://bioconductor.org/packages/%s)", pkg, pkg)
+}
+
+```
+
+```{r echo=FALSE, results='hide', message=FALSE}
+library(cowplot)
+library(data.table)
+library(ggplot2)
+library(ggpubr)
+library(ggrepel)
+library(purrr)
+library(wesanderson)
+library(deplink)
+```
+
+# Abstract
+
+'deplink' compares the genetic/epigenetic features between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+
+
+## Install deplink
+```{r eval = FALSE}
+##  Install deplink in R (>= 3.5.0)
+library(devtools)
+install_github("seanchen607/deplink")
+```
+
+## Load deplink and data libraries
+
+Data source: [DepMap](https://depmap.org/portal/) *(release 2019q4)* and [CCLE](https://portals.broadinstitute.org/ccle)
+
+```{r}
+## load package
+library(deplink)
+
+## load data libraries
+source(system.file("script", "load_libs.R", package = "deplink"))
+```
+
+## All-in-one analysis
+
+For example, deplink compares the genetic/epigenetic features between cancer cell lines with highest and lowest dependencies of "9-1-1" complex members:
+
+```{r eval = FALSE}
+deplink(signature.name = "9-1-1", signature = c("RAD9A", "RAD1", "HUS1", "RAD17"))
+```
+
+The results will be output to a local directory (default: root directory) under a folder in name of the designated "signature.name" ("9-1-1" in this case).
+
+Several cutoffs are set by default as below and can be changed by will. Please see the help page for more details (*?deplink*).
+
+```{r eval = FALSE}
+cutoff.freq        = 10
+cutoff.percentile  = 0.2
+cutoff.pvalue      = 0.05
+cutoff.qvalue      = 0.1
+cutoff.diff        = 0.1
+cutoff.fc          = 2
+```
+
+The comparison covers the following features:
+
+* Genomic/epigenetic features
+  - [x] Genetic dependency
+  - [x] Gene expression
+  - [x] Chromatin modification
+
+* Genome instability
+  - [x] Genetic mutation
+  - [x] COSMIC signature
+  - [x] Tumor mutation burden (TMB)
+  - [x] Copy number variation (CNV)
+  - [x] Microsatellite instability (MSI) 
+
+* Drug sensitivity
+  - [x] Drug sensitivity from GDSC data set
+  - [x] Drug sensitivity from PRISM data set
+
+* Immune infiltration
+  - [x] Immune signature gene (ISG) 
+
+* Stemness
+  - [x] mRNA stemness index (mRNAsi)
+  - [x] Epithelial–mesenchymal transition (EMT) 
+
+* Misc.
+  - [x] Cancer type
+
+
+## Individual analysis
+
+deplink can compare individual genetic/epigenetic feature between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+For example of "9-1-1" complex members:
+
+```{r}
+## "9-1-1" complex members as a gene set (signature)
+signature.name = "9-1-1"
+signature = c("RAD9A", "RAD1", "HUS1", "RAD17")
+```
+
+### Cancer type component
+'cancertypeHigh' displays the cancer type component of cell lines with high dependencies of a gene set (signature).
+```{r fig.width=8, fig.height=6}
+## display the cancer type component of cell lines with high dependencies of "9-1-1" complex
+cancertypeHigh(signature.name, signature)
+```
+
+'cancertypeLow' displays the cancer type component of cell lines with low dependencies of a gene set (signature).
+```{r fig.width=8, fig.height=6}
+## display the cancer type component of cell lines with low dependencies of "9-1-1" complex
+cancertypeLow(signature.name, signature)
+```
+
+'cancertypeLandscape' displays the landscape of cancer type component of cell lines with different dependencies of a gene set (signature).
+```{r fig.width=9, fig.height=2.5, dpi = 300}
+## display the landscape of cancer type component of cell lines with different dependencies of "9-1-1" complex
+cancertypeLandscape(signature.name, signature)
+```
+
+### Genetic dependency
+'dependency' compares the genetic dependency between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r, dpi = 300}
+## compare the genetic dependency between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+dependency(signature.name, signature)
+```
+
+### Gene expression
+'expressions' compares the gene expression between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r, dpi = 300}
+## compare the gene expression between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+expressions(signature.name, signature)
+```
+
+### Chromatin modification
+'chromatinModification' compares the chromatin modification abundance between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r, dpi = 300}
+## compare the chromatin modification abundance between cell lines with highest and lowest dependencies of "9-1-1" complex
+chromatinModification(signature.name, signature)
+```
+
+### Genetic mutation
+'mutations' compares the genetic mutations between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=12.5, fig.height=4.5, dpi = 300}
+## compare the genetic mutations between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+mutations(signature.name, signature)
+```
+
+### COSMIC signature
+'cosmic' compares the COSMIC signatures between cell lines with highest and lowest dependencies of a gene set (signature).
+```{r, dpi = 300}
+## compare the COSMIC signatures between cell lines with highest and lowest dependencies of "9-1-1" complex
+cosmic(signature.name, signature)
+```
+
+### Tumor mutation burden (TMB)
+'tmb' compares the tumor mutation burden (TMB) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=3, fig.height=4}
+## compare the tumor mutation burden (TMB) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+tmb(signature.name, signature)
+```
+
+### Copy number variation (CNV)
+'cnv' compares the copy number variation (CNV) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=3, fig.height=4}
+## compare the copy number variation (CNV) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+cnv(signature.name, signature)
+```
+
+### Microsatellite instability (MSI)
+'msi' compares the microsatellite instability (MSI) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=3, fig.height=4}
+## compare the microsatellite instability (MSI) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+msi(signature.name, signature)
+```
+
+### Drug sensitivity
+'drugGDSC' compares the drug sensitivity (GDSC dataset) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=8.5, fig.height=8.5, dpi = 300}
+## compare the drug sensitivity (GDSC dataset) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+drugGDSC(signature.name, signature)
+```
+
+'drugPRISM' compares the drug sensitivity (PRISM dataset) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=8.5, fig.height=8.5, dpi = 300}
+## compare the drug sensitivity (PRISM dataset) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+drugPRISM(signature.name, signature)
+```
+
+### Immune signature gene (ISG)
+'isg' compares the immune signature gene (ISG) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=3, fig.height=4}
+## compare the immune signature gene (ISG) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+isg(signature.name, signature)
+```
+
+### mRNA stemness index (mRNAsi)
+'mrnasi' compares the mRNA stemness index (mRNAsi) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=3, fig.height=4}
+## compare the mRNA stemness index (mRNAsi) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+mrnasi(signature.name, signature)
+```
+
+### Epithelial–mesenchymal transition (EMT)
+'emt' compares the epithelial–mesenchymal transition (EMT) between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r fig.width=3, fig.height=4}
+## compare the epithelial–mesenchymal transition (EMT) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
+emt(signature.name, signature)
+```
+
+
+# Citation
+
+If you use [deplink](https://github.com/seanchen607/deplink) in published research, 
+please cite the most appropriate paper(s) from this list:
+
+1.  **X Chen**, J McGuire, F Zhu, X Xu, Y Li, D Karagiannis, R Dalla-Favera, A Ciccia, J Amengual & C Lu (2020). 
+    Harnessing genetic dependency correlation network to reveal chromatin vulnerability in cancer.
+    ***In preparation***.
+
+# Session Information
+
+Here is the output of `sessionInfo()` on the system on which this document was compiled:
+
+```{r echo=FALSE}
+sessionInfo()
+```

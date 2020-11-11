@@ -224,7 +224,7 @@ deplink <- function(signature.name,
     p = suppressWarnings(p + annotation_custom(grob = ggplotGrob(p0)))
     ggsave(paste0("meta/dep_", signature.name, "_score_CancerType.TCGA.dotplot.pdf"), p, width=9, height=2)
 
-    message("[01/14] Analysis-cancer.type: done!")
+    message("[01/15] Analysis-cancer.type: done!")
     #############################################
 
     # Chromatin modification
@@ -344,7 +344,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("chromatin/dep_", signature.name, "_hml", cutoff.percentile, "_chromatin.high.low.deg.p", cutoff.pvalue, ".pdf"), p, width=8.5, height=4.5)
 
-    message("[02/14] Analysis-chromatin.modification: done!")
+    message("[02/15] Analysis-chromatin.modification: done!")
     #############################################
 
     # Mutation - COSMIC
@@ -459,7 +459,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("cosmic/dep_", signature.name, "_hml", cutoff.percentile, "_cosmic.high.low.deg.pdf"), p, width=8.5, height=4.5)
 
-    message("[03/14] Analysis-cosmic: done!")
+    message("[03/15] Analysis-cosmic: done!")
     #############################################
  
     # Mutation
@@ -621,7 +621,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("mutation/dep_", signature.name, "_hml", cutoff.percentile, "_mutation.high.low.deg.p", cutoff.pvalue,".pdf"), p, width=12.5, height=4.5)
 
-    message("[04/14] Analysis-mutation: done!")
+    message("[04/15] Analysis-mutation: done!")
     #############################################
  
     # Drug sensitivity - GDSC
@@ -784,7 +784,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("drug.GDSC/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=FALSE, device="pdf")
 
-    message("[05/14] Analysis-drug.GDSC: done!")
+    message("[05/15] Analysis-drug.GDSC: done!")
     #############################################
 
     # Drug sensitivity - PRISM
@@ -946,7 +946,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("drug.PRISM/dep_", signature.name, "_hml", cutoff.percentile, "_drug.high.low.deg.pdf"), p, width=8.5, height=8.5, limitsize=FALSE, device="pdf")
 
-    message("[06/14] Analysis-drug.PRISM: done!")
+    message("[06/15] Analysis-drug.PRISM: done!")
     #############################################
 
     # Dependency
@@ -1066,7 +1066,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("dependency/dep_", signature.name, "_hml", cutoff.percentile, "_dependency.high.low.deg.q", cutoff.qvalue, ".pdf"), p, width=8.5, height=4.5, limitsize=FALSE, device="pdf")
 
-    message("[07/14] Analysis-dependency: done!")
+    message("[07/15] Analysis-dependency: done!")
     #############################################
  
     # Expression
@@ -1187,7 +1187,7 @@ deplink <- function(signature.name,
     p <- ggplotGrob(p)
     ggsave(paste0("expression/dep_", signature.name, "_hml", cutoff.percentile, "_expression.high.low.deg.q", cutoff.qvalue, ".pdf"), p, width=8.5, height=4.5, limitsize=FALSE, device="pdf")
 
-    message("[08/14] Analysis-expression: done!")
+    message("[08/15] Analysis-expression: done!")
     #############################################
  
     # Genome instability
@@ -1244,7 +1244,7 @@ deplink <- function(signature.name,
       labs(title=paste0("TMB of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "TMB (log10)") +  theme_classic() + rremove("legend")
     ggsave(paste0("genome.instability/TMB/dep_", signature.name, "_hml", cutoff.percentile, "_TMB.pdf"), p1, width=3, height=4)
 
-    message("[09/14] Analysis-TMB: done!")
+    message("[09/15] Analysis-TMB: done!")
     #############################################
 
     # CNV
@@ -1298,7 +1298,7 @@ deplink <- function(signature.name,
       labs(title=paste0("CNV of signature [", signature.name, "]"), x=paste0(signature.name, " score"), y = "CNV (log10)") +  theme_classic() + rremove("legend")
     ggsave(paste0("genome.instability/CNV/dep_", signature.name, "_hml", cutoff.percentile, "_CNV.pdf"), p1, width=3, height=4)
 
-    message("[10/14] Analysis-CNV: done!")
+    message("[10/15] Analysis-CNV: done!")
     #############################################
 
     # Microsatellite instability (MSI)
@@ -1355,7 +1355,7 @@ deplink <- function(signature.name,
     ggsave(paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.pdf"), p1, width=3, height=4)
     # ggsave(paste0("genome.instability/MSI/dep_", signature.name, "_hml", cutoff.percentile, "_MSI.GDSC.pdf"), p1, width=3, height=4)
 
-    message("[11/14] Analysis-MSI: done!")
+    message("[11/15] Analysis-MSI: done!")
     #############################################
  
     # ISG
@@ -1410,7 +1410,7 @@ deplink <- function(signature.name,
     # p1
     ggsave(paste0("ISG/dep_", signature.name, "_hml", cutoff.percentile, "_ISG.pdf"), p1, width=3, height=4)
 
-    message("[12/14] Analysis-ISG: done!")
+    message("[12/15] Analysis-ISG: done!")
     #############################################
  
     # mRNAsi
@@ -1465,7 +1465,7 @@ deplink <- function(signature.name,
     # p1
     ggsave(paste0("mRNAsi/dep_", signature.name, "_hml", cutoff.percentile, "_mRNAsi.pdf"), p1, width=3, height=4)
 
-    message("[13/14] Analysis-mRNAsi: done!")
+    message("[13/15] Analysis-mRNAsi: done!")
     #############################################
 
     # EMT
@@ -1520,9 +1520,125 @@ deplink <- function(signature.name,
     # p1
     ggsave(paste0("EMT/dep_", signature.name, "_hml", cutoff.percentile, "_EMT.pdf"), p1, width=3, height=4)
 
-    message("[14/14] Analysis-EMT: done!")
+    message("[14/15] Analysis-EMT: done!")
     #############################################
     
+    # Hallmark score
+    dir.create(file.path(outputDir, signature.name, "hallmark"), showWarnings = FALSE)
+
+    hallmark.share.signature.high = hallmark.share[rownames(hallmark.share) %in% rownames(dep.t.signature.high),,drop=FALSE]
+    hallmark.share.signature.high$signature = paste0(signature.name, ".dep.high")
+    head(hallmark.share.signature.high)
+    dim(hallmark.share.signature.high)
+    # 40 44
+    hallmark.share.signature.low = hallmark.share[rownames(hallmark.share) %in% rownames(dep.t.signature.low),,drop=FALSE]
+    hallmark.share.signature.low$signature = paste0(signature.name, ".dep.low")
+    head(hallmark.share.signature.low)
+    dim(hallmark.share.signature.low)
+    # 46 44
+    hallmark.share.signature.mid = hallmark.share[!rownames(hallmark.share) %in% c(rownames(dep.t.signature.high), rownames(dep.t.signature.low)),,drop=FALSE]
+    hallmark.share.signature.mid$signature = paste0(signature.name, ".dep.mid")
+    head(hallmark.share.signature.mid)
+    dim(hallmark.share.signature.mid)
+    # 360  44
+
+    hallmark.share.signature = rbind(hallmark.share.signature.high, hallmark.share.signature.mid, hallmark.share.signature.low)
+    head(hallmark.share.signature)
+    dim(hallmark.share.signature)
+    # 446  44
+    write.csv(hallmark.share.signature, paste0("hallmark/dep_", signature.name, "_hml", cutoff.percentile, "_hallmark.csv"), quote=FALSE)
+
+    hallmark.high = hallmark.share.signature[hallmark.share.signature$signature %like% "high",,drop=FALSE]
+    head(hallmark.high)
+    dim(hallmark.high)
+    # 40 44
+    hallmark.mid = hallmark.share.signature[hallmark.share.signature$signature %like% "mid",,drop=FALSE]
+    hallmark.low = hallmark.share.signature[hallmark.share.signature$signature %like% "low",,drop=FALSE]
+
+    # signature.high
+    hallmark.high.p = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)], 2, function(x) signif(t.test(x[1:nrow(hallmark.high)], x[(nrow(hallmark.high)+1):nrow(hallmark.share.signature)])$p.value,5))
+    head(hallmark.high.p)
+    length(hallmark.high.p)
+    # 42
+    hallmark.high.q = signif(p.adjust(hallmark.high.p, "BH"),5)
+    head(hallmark.high.q)
+    length(hallmark.high.q)
+    # 42
+    hallmark.high.mean1 = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)],  2, function(x) signif(mean(na.omit(x[1:nrow(hallmark.high)])), 5))
+    hallmark.high.mean2 = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)],  2, function(x) signif(mean(na.omit(x[(nrow(hallmark.high)+1):nrow(hallmark.share.signature)])), 5))
+    hallmark.high.diff = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)], 2, function(x) signif(mean(na.omit(x[1:nrow(hallmark.high)])) - mean(na.omit(x[(nrow(hallmark.high)+1):nrow(hallmark.share.signature)])), 5))
+    head(hallmark.high.diff)
+    length(hallmark.high.diff)
+    # 42
+
+    hallmark.high.deg = data.frame(hallmark.high.mean1, hallmark.high.mean2, hallmark.high.diff, hallmark.high.p, hallmark.high.q, row.names=names(hallmark.high.diff))
+    colnames(hallmark.high.deg) = c("hallmark.high", "hallmark.other", "diff.high2other", "pvalue", "qvalue")
+    head(hallmark.high.deg)
+    dim(hallmark.high.deg)
+    # 42  5
+    write.csv(hallmark.high.deg, paste0("hallmark/dep_", signature.name, "_hml", cutoff.percentile, "_hallmark.high.deg.csv"), quote=FALSE)
+
+    # signature.low
+    hallmark.low.p = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)], 2, function(x) signif(t.test(x[1:(nrow(hallmark.share.signature)-nrow(hallmark.low))], x[(nrow(hallmark.share.signature)-nrow(hallmark.low)+1):nrow(hallmark.share.signature)])$p.value,5))
+    head(hallmark.low.p)
+    length(hallmark.low.p)
+    # 42
+    hallmark.low.q = signif(p.adjust(hallmark.low.p, "BH"),5)
+    head(hallmark.low.q)
+    length(hallmark.low.q)
+    # 42
+    hallmark.low.mean1 = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)],  2, function(x) signif(mean(na.omit(x[(nrow(hallmark.share.signature)-nrow(hallmark.low)+1):nrow(hallmark.share.signature)])), 5))
+    hallmark.low.mean2 = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)],  2, function(x) signif(mean(na.omit(x[1:(nrow(hallmark.share.signature)-nrow(hallmark.low))])), 5))
+    hallmark.low.diff = apply(hallmark.share.signature[1:(ncol(hallmark.share.signature)-1)], 2, function(x) signif(mean(na.omit(x[(nrow(hallmark.share.signature)-nrow(hallmark.low)+1):nrow(hallmark.share.signature)])) - mean(na.omit(x[1:(nrow(hallmark.share.signature)-nrow(hallmark.low))])), 5))
+    head(hallmark.low.diff)
+    length(hallmark.low.diff)
+    # 42
+
+    hallmark.low.deg = data.frame(hallmark.low.mean1, hallmark.low.mean2, hallmark.low.diff, hallmark.low.p, hallmark.low.q, row.names=names(hallmark.low.diff))
+    colnames(hallmark.low.deg) = c("hallmark.low", "hallmark.other", "diff.low2other", "pvalue", "qvalue")
+    head(hallmark.low.deg)
+    dim(hallmark.low.deg)
+    # 42  5
+    write.csv(hallmark.low.deg, paste0("hallmark/dep_", signature.name, "_hml", cutoff.percentile, "_hallmark.low.deg.csv"), quote=FALSE)
+
+    # cutoff.pvalue = 0.05
+    # cutoff.diff = 0
+    set.seed(42)
+    p1 <- ggplot(data = hallmark.high.deg, mapping = aes(x = diff.high2other, y = (-1)*log(pvalue, 10))) + 
+    geom_point(size=1, color= ifelse(hallmark.high.deg$pvalue < cutoff.pvalue & hallmark.high.deg$diff.high2other > cutoff.diff, "red", ifelse(hallmark.high.deg$pvalue < cutoff.pvalue & hallmark.high.deg$diff.high2other < cutoff.diff*(-1), "blue", "grey60")))+ 
+    # xlim(-0.2,0.2) + 
+    # ylim(0,4) + 
+    geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    annotate("text", x=min(hallmark.high.deg$diff.high2other), y=max(na.omit((-1)*log(hallmark.high.deg$pvalue, 10)), na.omit((-1)*log(hallmark.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.high cell lines: ", nrow(hallmark.share.signature.high)), color = "red", hjust = 0) + 
+    geom_label_repel(aes(label=ifelse(hallmark.high.deg$pvalue < cutoff.pvalue & abs(hallmark.high.deg$diff.high2other) > cutoff.diff, as.character(rownames(hallmark.high.deg)), "")), size = 2, color = ifelse(hallmark.high.deg$diff.high2other > 0, "red", "blue"), segment.size=0.2) +
+    labs(x="Hallmark score difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] High vs. others"))
+    p1 <- p1 + theme_classic() + rremove("legend")
+    # p1
+
+    p2 <- ggplot(data = hallmark.low.deg, mapping = aes(x = diff.low2other, y = (-1)*log(pvalue, 10))) + 
+    geom_point(size=1, color= ifelse(hallmark.low.deg$pvalue < cutoff.pvalue & hallmark.low.deg$diff.low2other > cutoff.diff, "red", ifelse(hallmark.low.deg$pvalue < cutoff.pvalue & hallmark.low.deg$diff.low2other < cutoff.diff*(-1), "blue", "grey60")))+ 
+    # xlim(-0.2,0.2) + 
+    # ylim(0,4) + 
+    geom_hline(yintercept = (-1)*log(cutoff.pvalue, 10), linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    geom_vline(xintercept = (-1)*cutoff.diff, linetype="dashed", colour="grey30", size=0.2) + 
+    annotate("text", x=min(hallmark.low.deg$diff.low2other), y=max(na.omit( (-1)*log(hallmark.high.deg$pvalue, 10)), na.omit((-1)*log(hallmark.low.deg$pvalue, 10)))*1.1, parse=FALSE, label = paste0("Signature.low cell lines: ", nrow(hallmark.share.signature.low)), color = "red", hjust = 0) + 
+    geom_label_repel(aes(label=ifelse(hallmark.low.deg$pvalue < cutoff.pvalue & abs(hallmark.low.deg$diff.low2other) > cutoff.diff, as.character(rownames(hallmark.low.deg)), "")), size = 2, color = ifelse(hallmark.low.deg$diff.low2other > 0, "red", "blue"), segment.size=0.2) +
+    labs(x="Hallmark score difference", y="-log10(p value)", title=paste0("Signature [", signature.name, "] Low vs. others"))
+    p2 <- p2 + theme_classic() + rremove("legend")
+    # p2
+
+    # Arranging the plot using cowplot
+    p = suppressWarnings(plot_grid(p1, p2, ncol = 2, align = "hv", rel_widths = c(1,1), rel_heights = c(1,1)))
+    p <- ggplotGrob(p)
+    ggsave(paste0("hallmark/dep_", signature.name, "_hml", cutoff.percentile, "_hallmark.high.low.deg.pdf"), p, width=8.5, height=4.5)
+
+    message("[15/15] Analysis-hallmark: done!")
+    #############################################
+
+	
     message("*** deplink finished successfully!")
     message(paste0("*** Please check results in output folder: ", getwd()))
 }

@@ -35,7 +35,7 @@ Biocpkg <- function (pkg) {
 
 ```
 
-```{r echo=FALSE, results='hide', message=FALSE}
+```{r echo=FALSE, results="hide", message=FALSE, warning=FALSE}
 library(cowplot)
 library(data.table)
 library(ggplot2)
@@ -238,6 +238,13 @@ mrnasi(signature.name, signature)
 ```{r fig.width=3, fig.height=4}
 ## compare the epithelial–mesenchymal transition (EMT) between cancer cell lines with highest and lowest dependencies of "9-1-1" complex
 emt(signature.name, signature)
+```
+
+### Hallmark signature score
+'hallmark' compares the Hallmark signature score between cancer cell lines with highest and lowest dependencies of a gene set (signature).
+```{r, dpi = 300}
+## compare the Hallmark signatures between cell lines with highest and lowest dependencies of "9-1-1" complex
+hallmark(signature.name, signature)
 ```
 
 

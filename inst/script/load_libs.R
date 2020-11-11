@@ -18,7 +18,7 @@
 	head(meta)
 	dim(meta)
 	# 1677    8
-    message("[01/15] Library-meta loaded...")
+    message("[01/16] Library-meta loaded...")
 
 	# Convert to TCGA Study Abbreviations
 	# https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations
@@ -30,7 +30,7 @@
 	head(TCGA.tumor)
 	dim(TCGA.tumor)
 	# 1457  1
-    message("[02/15] Library-TCGA.tumor loaded...")
+    message("[02/16] Library-TCGA.tumor loaded...")
 
 	### Dependency ### -1 as essential, 0 as non-essential
 	dep <- read.csv(unz(system.file("extdata", "avana_ceres_gene_effects_2019q4_noNA_3digits.zip", package = "deplink"), "avana_ceres_gene_effects_2019q4_noNA_3digits.csv"), header=TRUE, row.names=1)
@@ -55,7 +55,7 @@
 	head(dep.t.meta)
 	dim(dep.t.meta)
 	# 580 18342
-    message("[03/15] Library-dependency loaded...")
+    message("[03/16] Library-dependency loaded...")
 
 	### Mutation ###
 	mutation <- read.csv(unz(system.file("extdata", "depmap_19q2_mutation_calls.damage.hotspot_matrix.zip", package = "deplink"), "depmap_19q2_mutation_calls.damage.hotspot_matrix.csv"), header=TRUE, row.names=1)
@@ -64,7 +64,7 @@
 	head(mutation)
 	dim(mutation)
 	# 1630 16491
-    message("[04/15] Library-mutation loaded...")
+    message("[04/16] Library-mutation loaded...")
 
 	### COSMIC ###
 	cosmic <- read.csv(system.file("extdata", "CCLE_COSMIC_nodup.csv", package = "deplink"), header=TRUE, row.names=2)
@@ -75,7 +75,7 @@
 	head(cosmic.share)
 	dim(cosmic.share)
 	# 396  30
-    message("[05/15] Library-cosmic loaded...")
+    message("[05/16] Library-cosmic loaded...")
 
 	### Expression ### 
 	exp.TPM <- read.csv(unz(system.file("extdata", "CCLE_depMap_19q4_TPM_2digits.zip", package = "deplink"), "CCLE_depMap_19q4_TPM_2digits.csv"), header=TRUE, row.names=1)
@@ -87,7 +87,7 @@
 	head(exp.TPM.t)
 	dim(exp.TPM.t)
 	# 554 16950
-    message("[06/15] Library-expression loaded...")
+    message("[06/16] Library-expression loaded...")
 
 	### Chromatin modification ###
 	chromatin <- read.csv(system.file("extdata", "CCLE_GlobalChromatinProfiling_20181130_single.csv", package = "deplink"), header=TRUE, row.names=1)
@@ -96,7 +96,7 @@
 	head(chromatin)
 	dim(chromatin)
 	# 897  31
-    message("[07/15] Library-chromatin.modification loaded...")
+    message("[07/16] Library-chromatin.modification loaded...")
 
 	### Drug sensitivity - GDSC ### -2 as sensitive, 2 as resistant
 	drug.meta <- read.csv(system.file("extdata", "GDSC_Screened_Compounds.csv", package = "deplink"), header=TRUE, row.names=1)
@@ -108,7 +108,7 @@
 	head(drug)
 	dim(drug)
 	# 969 266
-    message("[08/15] Library-drug.GDSC loaded...")
+    message("[08/16] Library-drug.GDSC loaded...")
 
 	### Drug sensitivity - PRISM ### -2 as sensitive, 2 as resistant
 	drug2.meta <- read.csv(system.file("extdata", "PRISM_primary_replicate_collapsed_treatment_info.csv", package = "deplink"), header=TRUE, row.names=1)
@@ -122,49 +122,60 @@
 	head(drug2)
 	dim(drug2)
 	# 578 4686
-    message("[09/15] Library-drug.PRISM loaded...")
+    message("[09/16] Library-drug.PRISM loaded...")
     
 	TMB <- read.csv(system.file("extdata", "depmap_19q1_mutation_calls.TMB.csv", package = "deplink"), header=TRUE, row.names=1)
 	head(TMB)
 	dim(TMB)
 	# 1601    1
-    message("[10/15] Library-TMB loaded...")
+    message("[10/16] Library-TMB loaded...")
 	
 	CNV <- read.csv(system.file("extdata", "public_19q1_gene_cn_nodup.share.sig.cutoff1.csv", package = "deplink"), header=TRUE, row.names=1)
 	colnames(CNV) = gsub("burden", "CNV", colnames(CNV))
 	head(CNV)
 	dim(CNV)
 	# 554   3
-    message("[11/15] Library-CNV loaded...")
+    message("[11/16] Library-CNV loaded...")
 
 	MSI <- read.csv(system.file("extdata", "Ghandi2019_MSI.csv", package = "deplink"), header=TRUE, row.names=2)
 	colnames(MSI) = gsub("CCLE.hc.msi_del", "MSI", colnames(MSI))
 	head(MSI)
 	dim(MSI)
 	# 1330   11
-    message("[12/15] Library-MSI loaded...")
+    message("[12/16] Library-MSI loaded...")
 
 	ISG <- read.csv(system.file("extdata", "avana_ceres_celllines_2019q4_meta_ISG.score.csv", package = "deplink"), header=TRUE, row.names=1)
 	colnames(ISG) = gsub("ISG.score", "ISG", colnames(ISG))
 	head(ISG)
 	dim(ISG)
 	# 1677    9
-    message("[13/15] Library-ISG loaded...")
+    message("[13/16] Library-ISG loaded...")
 
 	mRNAsi <- read.csv(system.file("extdata", "CCLE_depMap_19q1_TPM_3digits_nodup_mRNAsi.csv", package = "deplink"), header=TRUE, row.names=1)
 	colnames(mRNAsi) = gsub("mRNAsi", "mRNAsi", colnames(mRNAsi))
 	head(mRNAsi)
 	dim(mRNAsi)
 	# 1165    1
-    message("[14/15] Library-ISG loaded...")
+    message("[14/16] Library-ISG loaded...")
 
 	EMT <- read.csv(system.file("extdata", "CCLE_depMap_19q1_zscore_3digits_nodup.share.EMT.score.csv", package = "deplink"), header=TRUE, row.names=1)
 	colnames(EMT) = gsub("EMT.score", "EMT", colnames(EMT))
 	head(EMT)
 	dim(EMT)
 	# 1677    9
-    message("[15/15] Library-ISG loaded...")
+    message("[15/16] Library-ISG loaded...")
 	
+	### hallmark ###
+	hallmark <- read.csv(system.file("extdata", "cancer_cellline_hallmark.score_2019q4.csv", package = "deplink"), header=TRUE, row.names=1)
+	head(hallmark)
+	dim(hallmark)
+	# 1249   50
+	hallmark.share = hallmark[rownames(hallmark) %in% rownames(dep.t),,drop=FALSE]
+	head(hallmark.share)
+	dim(hallmark.share)
+	# 684  50
+    message("[16/16] Library-hallmark loaded...")
+
     message("All libraries are loaded successfully!")
 # }
 
